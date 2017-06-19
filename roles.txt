@@ -1,0 +1,23 @@
+The roles that can be self assigned are as follows:
+
+lol player
+csgo player
+wow player
+dn player
+tctd player
+ark player
+ffxiv player
+osu player
+diablo 3 player
+gta v player
+tera player
+overwatch player
+gmod player
+rss player
+
+
+All of the above are case sensitive. 
+
+If you don't know what it stands for go look on the website, it might tell you.
+
+If you need any further help contact a member of staff.

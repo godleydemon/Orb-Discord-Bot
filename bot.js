@@ -1,0 +1,505 @@
+const HerokuPort = process.env.PORT || 8080;
+const express = require('express');
+const app = express();
+
+app.use(express.static(__dirname));
+app.listen(HerokuPort, function() {
+	console.log('Port bound successfully');
+})
+app.get("/", function(req, res) {
+	res.render("index");
+})
+
+// Discord and node module declarations //
+const Discord = require("discord.js");
+const bot = new Discord.Client({
+	disableEveryone: true,
+	messageCacheMaxSize: 1000,
+	messageCacheLifetime: 300,
+	messageSweepInterval: 60
+});
+
+const config = require("./config.json");
+
+const Cleverbot = require('cleverbot-node');
+const cb = new Cleverbot;
+
+const JQ = require('json-query');
+
+const PG = require('./personalized_messages.json');
+
+const getJSON = require('get-json');
+
+const Cryptr = require('cryptr');
+const cryptr = new Cryptr('SuperSecret');
+
+const fs = require('fs');
+
+const asciify = require('asciify');
+
+const isgd = require('isgd');
+
+// Global declarations //
+const self = "<@!250943511648534528>";
+const prefix = ";"
+const selfid = "250943511648534528";
+const owner_id = "105640584470937600";
+const orbios_id = "105684379648425984";
+const debugServer_id = "324854543344992277";
+const botpic = "E:/Stuff/Wallpapers & Themes/Pictures/ene_pic.jpg";
+const botpiconline = "http://i.imgur.com/8VuWSCh.jpg";
+const orbioslogo = "http://i.imgur.com/LwPxT50.jpg";
+const bluehex = "#00ccff";
+const purplehex = "#8042f4";
+const redhex = "#FF044A";
+const greenhex = "#A3F37A";
+const GenericErrorMessage = "Something seems to have gone wrong... sorry, try again!";
+var uploaded = false;
+var voice_connection;
+var d = new Date();
+var Month = d.getMonth();
+// --Global declarations-- //
+
+bot.on('ready', () => {
+	console.log("Bot login successfull");
+	bot.user.setGame(";cmds");
+});
+
+bot.on('presenceUpdate', async(oldMember, newMember) => {
+	try {
+		if (!newMember.user.presence.game) return;
+		if (newMember.guild.id !== orbios_id && newMember.guild.id !== debugServer_id) return;
+		if (newMember.roles.exists("name", "dnd")) return;
+
+		let guild = await newMember.guild;
+		let guildroles = await newMember.guild.roles;
+		let newGame = await newMember.user.presence.game.name.toLowerCase();
+
+
+		if (newGame === "osu!" && !newMember.roles.find("name", "osu player")) {
+			newMember.addRole(guildroles.find("name", "osu player"))
+		} else if (newGame === "the division" && !newMember.roles.find("name", "tctd player")) {
+			newMember.addRole(guildroles.find("name", "tctd player"))
+		} else if (newGame === "counter-strike: global offensive" && !newMember.roles.find("name", "csgo player")) {
+			newMember.addRole(guildroles.find("name", "csgo player"))
+		} else if (newGame === "diablo 3" && !newMember.roles.find("name", "diablo 3 player")) {
+			newMember.addRole(guildroles.find("name", "diablo 3 player"))
+		} else if (newGame === "league of legends" && !newMember.roles.find("name", "lol player")) {
+			newMember.addRole(guildroles.find("name", "lol player"))
+		} else if (newGame === "dragon nest" && !newMember.roles.find("name", "dn player")) {
+			newMember.addRole(guildroles.find("name", "dn player"))
+		} else if (newGame === "grand theft auto v" && !newMember.roles.find("name", "gtav player")) {
+			newMember.addRole(guildroles.find("name", "gtav player"))
+		} else if (newGame === "ark: survival evolved" && !newMember.roles.find("name", "ark player")) {
+			newMember.addRole(guildroles.find("name", "ark player"))
+		} else if (newGame === "garry's mod" || newGame === "gmod" || newGame === "garrysmod") {
+			if (!newMember.roles.find("name", "gmod player")) {
+				newMember.addRole(guildroles.find("name", "gmod player"))
+			}
+		} else if (newGame === "overwatch" && !newMember.roles.find("name", "overwatch player")) {
+			newMember.addRole(guildroles.find("name", "overwatch player"))
+		} else if (newGame === "tera" && !newMember.roles.find("name", "tera player")) {
+			newMember.addRole(guildroles.find("name", "tera player"))
+		} else if (newGame === "world of warcraft" || newGame === "world of warcraft ptr") {
+			if (!newMember.roles.find("name", "wow player")) {
+				newMember.addRole(guildroles.find("name", "wow player"))
+			}
+		} else if (newGame === "final fantasy xiv" && !newMember.roles.find("name", "ffxiv player")) {
+			newMember.addRole(guildroles.find("name", "ffxiv player"))
+		} else if (newGame === "rainbow six siege" && !newMember.roles.find("name", "tcrss player")) {
+			newMember.addRole(guildroles.find("name", "tcrss player"))
+		} else if (newGame === "rocket league" && !newMember.roles.find("name", "rl player")) {
+			newMember.addRole(guildroles.find("name", "rl player"))
+		}
+	} catch (e) {
+		console.log(e);
+	}
+});
+
+bot.on('message', async(message) => {
+	try {
+		if (message.author.bot) return;
+
+		const author = await message.author;
+		const content = await message.content;
+		const logchannel = await bot.channels.get("271569777686740992");
+		const channel = await message.channel;
+		const member = await message.guild.fetchMember(message.author);
+
+		// Module Imports //
+		require("./modules/social.js").social(message);
+		require("./modules/logger.js").logger(bot, message);
+		require("./modules/orb.js").orb(Discord, message);
+		require("./modules/moderation.js").moderation(bot, message);
+		require("./modules/osu.js").osu(Discord, message);
+		require("./modules/google.js").google(Discord, message);
+		require("./modules/youtube.js").youtube(Discord, message);
+		require("./modules/twitch.js").twitch(Discord, message);
+		require("./modules/music.js").music(bot, message);
+		require("./modules/anime.js").anime(Discord, message);
+		require("./modules/wallpaper.js").wallpaper(message);
+		require("./modules/custom.js").custom(message);
+		require("./modules/info.js").info(message);
+		// --Module Imports-- //
+
+
+		//If the message starts with a mention or the prefix assume it's a command and check to see if it is...
+		if (content.startsWith(self + ' ') || content.startsWith(prefix)) {
+			let charnum = 5;
+			let cbaccess;
+			let userinput;
+
+
+			if (content.startsWith(self + ' ')) {
+				userinput = content.replace(self, '');
+				cbaccess = true;
+			}
+			if (content.startsWith(prefix)) {
+				userinput = content.replace(prefix, '');
+				cbaccess = false;
+			}
+
+			while (userinput.startsWith(' ')) {
+				userinput = userinput.substring(1)
+					.toLowerCase();
+			}
+
+			//Displays all commands that are currently available, along with what they do.
+			if (userinput === 'cmds') {
+				let embed;
+				if (message.guild != null) {
+					if (message.guild.id === orbios_id || message.guild.id === debugServer_id) {
+						embed = new Discord.RichEmbed()
+							.setAuthor("Remember: Use me, don't abuse me! :P", botpiconline)
+							.setThumbnail(botpiconline)
+							.setDescription("\n\n" +
+								"**orb cmds** | Provides a list of commands only for Orbios (extra secret & spicy)\n\n" +
+								"**join** | Provides a link so that you can invite me to your server, silly! \n\n" +
+								"**server** | Provides an invite link to my server! :O (yes I have a server) \n\n" +
+								"**gs <what to search for>** | Searches google for the secret stuff \n\n" +
+								"**ys <what to search for>** | Searches youtube for the really `special` videos you like to watch\n\n" +
+								"**myip** | Gives a link to a ip retrieving website (absolutely not an IP grabber)\n\n" +
+								"**osu <username>** | Displays details on the specified osu! user... cookiezi-sama :blue_heart:\n\n" +
+								"**anime <anime name>** | Searches for an anime and returns info on it (so you can stroke away at the `actual` plot)\n\n" +
+								"**wallpaper <keywords>** | Searches for a wallpaper with or without the keywords\n\n" +
+								"**wallpapers <number>** | Returns X amount of wallpapers\n\n" +
+								"**twitch <channel name>** | Searches for a twitch channel and returns the top result (the one everyone cares about)\n\n" +
+								"**encrypt <text>** | Encrypts the text given (so you too can be extra sneaky... at least for a while)\n\n" +
+								"**rprog <invite code>** | Displays the progress towards obtaining the 'Recruiter' role on Orbios (the best place to be)\n\n"
+							)
+							.setColor(bluehex);
+					}
+				} else {
+					embed = new Discord.RichEmbed()
+						.setAuthor("Remember: Use me, don't abuse me! :P", botpiconline)
+						.setThumbnail(botpiconline)
+						.setDescription("\n\n" +
+							"**cmds** | Please, `even you` can't be `this` stupid!\n\n" +
+							"**join** | Provides a link so that you can invite me to your server, silly! \n\n" +
+							"**server** | Provides an invite link to my server! :O (yes I have a server) \n\n" +
+							"**gs <what to search for>** | Searches google for the secret stuff \n\n" +
+							"**ys <what to search for>** | Searches youtube for the really `special` videos you like to watch\n\n" +
+							"**myip** | Gives a link to a ip retrieving website (absolutely not an IP grabber)\n\n" +
+							"**osu <username>** | Displays details on the specified osu! user... cookiezi-sama :blue_heart:\n\n" +
+							"**anime <anime name>** | Searches for an anime and returns info on it (so you can stroke away at the `actual` plot)\n\n" +
+							"**wallpaper <keywords>** | Searches for a wallpaper with or without the keywords\n\n" +
+							"**wallpapers <number>** | Returns X amount of wallpapers\n\n" +
+							"**twitch <channel name>** | Searches for a twitch channel and returns the top result (the one everyone cares about)\n\n" +
+							"**encrypt <text>** | Encrypts the text given (so you too can be extra sneaky... at least for a while)\n\n"
+						)
+						.setColor(bluehex);
+				}
+
+				author.send({
+						embed
+					})
+					.catch(function() {
+						channel.send(GenericErrorMessage, true)
+					});
+				return;
+			}
+
+			//Provides a link that can be used to invite Ene to a new Discord server.
+			if (userinput === 'join') {
+				let embed = new Discord.RichEmbed()
+					.setTitle("Invite to server")
+					.setColor(bluehex)
+					.setThumbnail(botpiconline)
+					.setDescription("I'll join, but only if I get my own role :P")
+					.setURL("https://discordapp.com/oauth2/authorize?permissions=8&scope=bot&client_id=250943511648534528");
+
+				channel.send({
+						embed
+					})
+					.catch(function() {
+						channel.send(GenericErrorMessage, true)
+					});
+				return;
+			}
+
+			//Sends a link to the creator's discord server.
+			if (userinput === 'creator') {
+				let embed = new Discord.RichEmbed()
+					.setTitle("Meet my creator")
+					.setThumbnail(botpiconline)
+					.setColor(bluehex)
+					.setURL("https://discordapp.com/invite/0abEJoLeXf9kswil")
+					.setDescription("by clicking the link (Do it, you wont!)");
+
+				channel.send({
+						embed
+					})
+					.catch(function() {
+						channel.send(GenericErrorMessage, true)
+					});
+				return;
+			}
+
+			//Sends a link to the Ene Discord server.
+			if (userinput === 'server') {
+				let embed = new Discord.RichEmbed()
+					.setTitle("Join my server")
+					.setColor(bluehex)
+					.setURL("https://discord.gg/2ffbTEQ")
+					.setDescription("by clicking the link (Do it, you wont!)");
+
+				channel.send({
+						embed
+					})
+					.catch(function() {
+						channel.send(GenericErrorMessage, true)
+					});
+				return;
+			}
+
+			//Sends a link that allows users to see their public IP address.
+			if (userinput === 'myip') {
+				let embed = new Discord.RichEmbed()
+					.setColor(bluehex)
+					.setTitle("Get your IP")
+					.setURL("http://icanhazip.com/");
+
+				channel.send({
+						embed
+					})
+					.catch(function() {
+						channel.send(GenericErrorMessage)
+					});
+				return;
+			}
+
+			//Rolls and returns a result between 1 and the number provided
+			if (userinput.startsWith('roll')) {
+				let amount = userinput.replace('roll', '');
+				let text = ['Wow, you got slain by a dragon!', 'Holy moly, you found the ravioli sword!', 'Woah, you leveled up!'];
+				let rnd = Math.floor(Math.random() * 3);
+
+				if (amount.startsWith(' ') && isNumeric(amount) === true) {
+					channel.send(author + " **You rolled:** " + Math.floor(Math.random() * amount + 1) + "\n" + text[rnd]);
+				} else if (amount === '') {
+					channel.send(author + " **You rolled:** " + Math.floor(Math.random() * 100 + 1) + "\n" + text[rnd]);
+				}
+				return;
+			}
+
+			//Encrypts whatever string it is given into aes-256-ctr
+			if (userinput.startsWith('encrypt ')) {
+				var lastmsg = message;
+				var secret = userinput.replace('encrypt ', '');
+				if (!secret) return;
+
+				channel.send(author + " " + cryptr.encrypt(secret))
+					.then(function() {
+						lastmsg.delete()
+					});
+
+				return;
+			}
+
+			//Converts image to ascii.
+			if (userinput.startsWith('asciify ')) {
+				var text = userinput.replace('asciify ', '');
+
+				asciify(text, function(err, res) {
+					if (err) return channel.send(author + " Couldn't convert to ascii.");
+
+					fs.writeFileSync('./ascii.txt', res);
+					sleep(2000)
+						.then(function() {
+							channel.sendFile('./ascii.txt');
+						});
+				});
+
+				return;
+			}
+
+			//Shortens the url given to it.
+			if (userinput.startsWith('shorten ')) {
+				var url = userinput.replace('shorten ', '');
+
+				isgd.shorten(url, function(res) {
+					if (!res.toLowerCase()
+						.includes('error')) {
+						channel.send(author + " **Here is the shortened url:** <" + res + ">");
+					} else {
+						channel.send(author + " Could not shorten url...");
+					}
+				});
+
+				return;
+			}
+
+			//Displays progress towards obtaining Recruiter role on Orbios.
+			if (userinput.startsWith('rprog ')) {
+				if (message.guild.id !== orbios_id && message.guild.id !== debugServer_id) return;
+				let inviteCode = userinput.replace('rprog ', '');
+
+				message.guild.fetchInvites().then(function(res, err) {
+					let invite = res.get(inviteCode);
+					if (invite.uses < 5) channel.send(author + ` **Progress:** ${invite.uses}/5`);
+					else {
+						if (member.roles.exists("name", "Recruiter")) return channel.send(author + " What are you trying to pull here?! You already have the Recruiter role.");
+						if (author.id !== invite.inviter.id) return channel.send(author + " Trying to benefit off of someone else's hard work I see... /ban");
+
+						channel.send(author + ' We need more sheep **I MEAN** people like you... hehe :blue_heart:');
+						member.addRole(message.guild.roles.find("name", "Recruiter"));
+					}
+				}).catch(function(err) {
+					if (err) console.log(err);
+					channel.send(author + " Sorry, I couldn't fetch that... Try again maybe? :P");
+				});
+
+				return;
+			}
+
+			//Debugs any JavaScript code using eval.
+			if (userinput.startsWith('eval ')) {
+				if (author.id !== owner_id) return;
+				let code;
+				let res;
+				let lastmsg = message;
+				let thumbnail = "https://media.giphy.com/media/Hh6TxIOIh6o36/giphy.gif";
+
+				try {
+					code = userinput.replace('eval ', '');
+					res = await String(eval(code));
+
+					if (res.length <= 500) {
+						let embed = new Discord.RichEmbed()
+							.setColor(bluehex)
+							.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
+							.setThumbnail(thumbnail)
+							.setDescription('**Eval Result:** :white_check_mark:\n\n**Input:**\n```\n' + code + '\n```\n**Output:**\n```js\n' + res + '\n```');
+
+						lastmsg.delete();
+						channel.send({
+								embed
+							})
+							.catch(function() {
+								channel.send(GenericErrorMessage)
+							});
+					} else {
+						let embed = new Discord.RichEmbed()
+							.setColor(bluehex)
+							.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
+							.setThumbnail(thumbnail)
+							.setDescription('**Eval Result:** :x:\n\n**Input:**\n```\n' + code + '\n```\n**Output:**\n```The output was over 500 chars, so it will not be sent here.```');
+
+						lastmsg.delete();
+						channel.send({
+								embed
+							})
+							.catch(function() {
+								channel.send(GenericErrorMessage)
+							});
+					}
+				} catch (e) {
+					let embed = new Discord.RichEmbed()
+						.setColor(bluehex)
+						.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
+						.setThumbnail(thumbnail)
+						.setDescription('**Eval Result:** :x:\n\n**Input:**\n```\n' + code + '\n```\n**Output:**\n```undefined```');
+
+					lastmsg.delete();
+					channel.send({
+							embed
+						})
+						.catch(function() {
+							channel.send(GenericErrorMessage)
+						});
+				}
+
+				return;
+			}
+
+			// Deletes messages according to amount stated [Default: 2]
+			if (userinput.startsWith("prune")) {
+				let amountString = userinput.replace("prune", "");
+				let amount = parseInt(amountString) + 1;
+
+				if (member.roles.exists("name", "Staff") && isNumeric(amountString) && amountString.startsWith(' ')) {
+					message.channel.bulkDelete(amount);
+				} else if (!amountString) {
+					message.channel.bulkDelete(2);
+				}
+
+				return;
+			}
+
+			//This will only get run if NO other command was executed.
+			//Sends the user's message to cleverbot's api and sends a message containing cleverbot's response.
+			if (cbaccess === true) {
+				if (message.channel.type === "dm" || message.channel.type === "text") {
+					Cleverbot.prepare(function() {
+						cb.write(message.cleanContent.replace("@Ene ", ""), function(response) {
+							if (response.message === "<html>" || response.status === '401') {
+								channel.send("The talking functionality appears to currently be out-of-order. This may take a while to fix.");
+							} else {
+								let embed = new Discord.RichEmbed()
+									.setColor(bluehex)
+									.setAuthor("Cleverbot", "http://a2.mzstatic.com/us/r30/Purple3/v4/71/6a/74/716a747d-152f-ab09-2e72-5622fd369655/icon175x175.png")
+									.setTitle(author.username)
+									.setDescription(response.message);
+
+								channel.send({
+										embed
+									})
+									.catch(function() {
+										channel.send(GenericErrorMessage)
+									});
+							}
+						})
+					});
+				}
+			}
+
+		} // this is the end of the if statement that checks if the message startsWith self or prefix...
+	} catch (e) {
+		console.error(e);
+	}
+}); // End of bot.on('message')
+
+function sleep(time) {
+	return new Promise((resolve) => setTimeout(resolve, time));
+}
+
+function reverseString(string) {
+	return string.split('')
+		.reverse()
+		.join('');
+}
+
+function isNumeric(n) {
+	return !isNaN(parseFloat(n)) && isFinite(n);
+}
+
+//Logs into the bot account
+bot.login(config.bot_debug_token).catch(e => console.error(e));
+
+bot.on('error', (e) => {
+	console.error(e);
+});
+
+process.on('uncaughtException', (e) => {
+	console.error(e);
+});
