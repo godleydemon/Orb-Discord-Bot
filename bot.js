@@ -6,9 +6,6 @@ app.use(express.static(__dirname));
 app.listen(HerokuPort, function() {
 	console.log('Port bound successfully');
 })
-app.get("/", function(req, res) {
-	res.render("index");
-})
 
 // Discord and node module declarations //
 const Discord = require("discord.js");
