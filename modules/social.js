@@ -224,3 +224,7 @@ function reverseString(string) {
 		.reverse()
 		.join('');
 }
+
+function sleep(time) {
+	return new Promise((resolve) => setTimeout(resolve, time));
+}
