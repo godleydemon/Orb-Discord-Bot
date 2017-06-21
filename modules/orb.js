@@ -45,38 +45,15 @@ module.exports.orb = async(Discord, message) => {
 			if (userinput.startsWith('orb ')) {
 				if (message.guild != null) {
 					if (message.guild.id === orbios_id || message.guild.id === debugServer_id) {
-						var what = userinput.replace('orb ', '');
+						let what = userinput.replace('orb ', '');
 
-						if (what === "cmds") {
-							var embed = new Discord.RichEmbed()
-								.setColor(redhex)
-								.setTitle("Orbios Commands")
-								.setThumbnail(orbioslogo)
-								.setDescription("" +
-									"\n**site** gives a link to the website" +
-									"\n\n**apply** gives a link to the staff app" +
-									"\n\n**invite** gives a permanent invite link to Orbios" +
-									"\n\n**twitch** gives a link to Orbios' twitch where all our streamers are hosted!" +
-									"\n\n**roles** lists all roles available to self-assign" +
-									"\n\n**sr** assigns a role if it is from the list" +
-									"\n\n**custom** sets a custom message for whatever follows it (gn, gm)" +
-									"\n\n**tournament** gives a permanent invite link to the Orbios tournament server" +
-									"\n\n**puzzle**  gives a link to the puzzle section of the website"
-								);
-						} else if (what === "site") {
+						if (what === "site") {
 							var embed = new Discord.RichEmbed()
 								.setColor(redhex)
 								.setTitle("Orbios Website")
 								.setURL("http://orbios.netau.net/")
 								.setThumbnail(orbioslogo)
 								.setDescription("The home to all sorts of useful and fancy things!");
-						} else if (what === "apply") {
-							var embed = new Discord.RichEmbed()
-								.setColor(redhex)
-								.setTitle("Staff Application Download")
-								.setURL("https://mega.nz/#!NhVmHKbB!2TNVhbV2EZruBylxZaZ4lgWosJG9F5-QfrajFVdlo5s")
-								.setThumbnail(orbioslogo)
-								.setDescription("To apply for staff, download and run the program, and follow the prompts/answer the questions!");
 						} else if (what === "invite") {
 							var embed = new Discord.RichEmbed()
 								.setColor(redhex)
@@ -108,13 +85,6 @@ module.exports.orb = async(Discord, message) => {
 									.setTitle("Role has been assigned!")
 									.setDescription(`I hope you enjoy having the **${role}** role`);
 							}
-						} else if (what === "twitch") {
-							var embed = new Discord.RichEmbed()
-								.setColor(redhex)
-								.setThumbnail(orbioslogo)
-								.setTitle("Twitch Channel")
-								.setURL("https://www.twitch.tv/animusgroup")
-								.setDescription("I hope you enjoy watching our streamers!");
 						} else if (what === "tournament") {
 							var embed = new Discord.RichEmbed()
 								.setColor(redhex)
