@@ -32,6 +32,7 @@ module.exports.anime = async(Discord, message, userinput) => {
 						});
 				})
 				.catch(function(err) {
+					console.log(err);
 					channel.send(author + ' Anime was not found...')
 					if (userinput === 'anime cancer') {
 						channel.send(author + " I believe you're looking for a documentary on yourself... Try searching elsewhere.");

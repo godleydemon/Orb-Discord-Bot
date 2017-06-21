@@ -1,7 +1,7 @@
 require('../bot.js');
 
 
-module.exports.orb = async(Discord, message, userinput, redhex) => {
+module.exports.orb = async(Discord, message, userinput, redhex, orbios_id, debugServer_id, orbioslogo) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
@@ -11,72 +11,89 @@ module.exports.orb = async(Discord, message, userinput, redhex) => {
 		//A bunch of commands for Orbios
 		if (userinput.startsWith('orb ')) {
 			if (message.guild != null) {
-				if (message.guild.id === orbios_id || message.guild.id === debugServer_id) {
-					let what = userinput.replace('orb ', '');
+				if (message.guild.id !== orbios_id || message.guild.id !== debugServer_id) return;
+				let what = userinput.replace('orb ', '');
+				let embed;
 
-					if (what === "site") {
-						var embed = new Discord.RichEmbed()
-							.setColor(redhex)
-							.setTitle("Orbios Website")
-							.setURL("http://orbios.netau.net/")
-							.setThumbnail(orbioslogo)
-							.setDescription("The home to all sorts of useful and fancy things!");
-					} else if (what === "invite") {
-						var embed = new Discord.RichEmbed()
-							.setColor(redhex)
-							.setTitle("Permanent Invite Link")
-							.setURL("https://discord.gg/invite/0abEJoLeXf9kswil")
-							.setThumbnail(orbioslogo)
-							.setDescription("Invite your friends using the link above!");
-					} else if (what === "roles") {
-						var embed = new Discord.RichEmbed()
-							.setColor(redhex)
-							.setTitle("Roles List")
-							.setURL("https://my.mixtape.moe/hkpuhq.txt")
-							.setThumbnail(orbioslogo)
-							.setDescription("See all the available roles by clicking the link above!");
-					} else if (what.startsWith("sr")) {
-						var role = userinput.replace("orb sr ", "");
+				if (what === "site") {
+					embed = new Discord.RichEmbed()
+						.setColor(redhex)
+						.setTitle("Orbios Website")
+						.setURL("http://orbios.netau.net/")
+						.setThumbnail(orbioslogo)
+						.setDescription("The home to all sorts of useful and fancy things!");
+				} else if (what === "invite") {
+					embed = new Discord.RichEmbed()
+						.setColor(redhex)
+						.setTitle("Permanent Invite Link")
+						.setURL("https://discord.gg/invite/0abEJoLeXf9kswil")
+						.setThumbnail(orbioslogo)
+						.setDescription("Invite your friends using the link above!");
+				} else if (what === "roles") {
+					embed = new Discord.RichEmbed()
+						.setColor(redhex)
+						.setTitle("Roles List")
+						.setURL("https://my.mixtape.moe/hkpuhq.txt")
+						.setThumbnail(orbioslogo)
+						.setDescription("See all the available roles by clicking the link above!");
+				} else if (what.startsWith("sr ")) {
+					let role = what.replace("sr ", "");
 
-						if (!message.guild.roles.find("name", role) || guild.roles.exists("name", role) === false) {
-							var embed = new Discord.RichEmbed()
-								.setColor(redhex)
-								.setThumbnail(orbioslogo)
-								.setTitle("Error")
-								.setDescription(`Assigning the role failed... Maybe you spelt it wrong?`);
-						} else {
-							member.addRoles(message.guild.roles.find("name", role));
-							var embed = new Discord.RichEmbed()
-								.setColor(redhex)
-								.setThumbnail(orbioslogo)
-								.setTitle("Role has been assigned!")
-								.setDescription(`I hope you enjoy having the **${role}** role`);
-						}
-					} else if (what === "tournament") {
-						var embed = new Discord.RichEmbed()
+					if (!message.guild.roles.find("name", role) || guild.roles.exists("name", role) === false) {
+						embed = new Discord.RichEmbed()
 							.setColor(redhex)
 							.setThumbnail(orbioslogo)
-							.setTitle("Tournament Server")
-							.setURL("https://discord.gg/ZQdXRNJ")
-							.setDescription("I hope you enjoy the tournaments!");
-					} else if (what === "puzzle") {
-						var embed = new Discord.RichEmbed()
-							.setColor(redhex)
-							.setThumbnail(orbioslogo)
-							.setTitle("Puzzle Link")
-							.setURL("http://orbios.netau.net/Orbiospuzzle/")
-							.setDescription("I wish you the best of luck with the puzzle!");
+							.setTitle("Error")
+							.setDescription(`Assigning the role failed... Maybe you spelt it wrong?`);
 					} else {
-						return;
+						member.addRoles(message.guild.roles.find("name", role));
+						embed = new Discord.RichEmbed()
+							.setColor(redhex)
+							.setThumbnail(orbioslogo)
+							.setTitle("Role has been assigned!")
+							.setDescription(`I hope you enjoy having the **${role}** role`);
 					}
+				} else if (what === "tournament") {
+					embed = new Discord.RichEmbed()
+						.setColor(redhex)
+						.setThumbnail(orbioslogo)
+						.setTitle("Tournament Server")
+						.setURL("https://discord.gg/ZQdXRNJ")
+						.setDescription("I hope you enjoy the tournaments!");
+				} else if (what === "puzzle") {
+					embed = new Discord.RichEmbed()
+						.setColor(redhex)
+						.setThumbnail(orbioslogo)
+						.setTitle("Puzzle Link")
+						.setURL("http://orbios.netau.net/Orbiospuzzle/")
+						.setDescription("I wish you the best of luck with the puzzle!");
+				} else if (what.startsWith('rprog ')) {
+					let inviteCode = what.replace('rprog ', '');
 
-					channel.send({
-							embed
-						})
-						.catch(function() {
-							channel.send(GenericErrorMessage)
-						});
+					message.guild.fetchInvites().then(function(res, err) {
+						let invite = res.get(inviteCode);
+						if (invite.uses < 5) channel.send(author + ` **Progress:** ${invite.uses}/5`);
+						else {
+							if (member.roles.exists("name", "Recruiter")) return channel.send(author + " What are you trying to pull here?! You already have the Recruiter role.");
+							if (author.id !== invite.inviter.id) return channel.send(author + " Trying to benefit off of someone else's hard work I see... /ban");
+
+							channel.send(author + ' We need more sheep **I MEAN** people like you... hehe :blue_heart:');
+							member.addRole(message.guild.roles.find("name", "Recruiter"));
+						}
+					}).catch(function(err) {
+						if (err) console.log(err);
+						channel.send(author + " Sorry, I couldn't fetch that... Try again maybe? :P");
+					});
+				} else {
+					return;
 				}
+
+				channel.send({
+						embed
+					})
+					.catch(function() {
+						channel.send(GenericErrorMessage)
+					});
 			}
 		}
 	} catch (e) {

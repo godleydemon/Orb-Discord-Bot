@@ -185,7 +185,7 @@ module.exports.social = async(message, orbios_id, debugServer_id, owner_id, self
 				}
 
 				//If someone doesn't put a role after sr, reply to them.
-				if (content === 'sr') {
+				if (content === ';orb sr') {
 					channel.send(author + ' Alright, let me assign the role of nothing to you...')
 						.then(function() {
 							sleep(3000)

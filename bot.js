@@ -150,7 +150,7 @@ bot.on('message', async(message) => {
 		}
 
 		// Module Imports //
-		require("./modules/orb.js").orb(Discord, message, userinput, redhex);
+		require("./modules/orb.js").orb(Discord, message, userinput, redhex, orbios_id, debugServer_id, orbioslogo);
 		require("./modules/moderation.js").moderation(bot, message, userinput, selfid);
 		require("./modules/osu.js").osu(Discord, message, userinput, self, pinkhex);
 		require("./modules/google.js").google(Discord, message, userinput, greenhex);
@@ -159,7 +159,7 @@ bot.on('message', async(message) => {
 		require("./modules/music.js").music(bot, message, userinput);
 		require("./modules/anime.js").anime(Discord, message, userinput);
 		require("./modules/wallpaper.js").wallpaper(message, userinput);
-		require("./modules/custom.js").custom(message, userinput);
+		require("./modules/custom.js").custom(message, userinput, owner_id);
 		require("./modules/info.js").info(message, userinput);
 		require("./modules/eval.js").eval(Discord, bot, message, userinput, bluehex, owner_id);
 		// --Module Imports-- //
@@ -328,29 +328,6 @@ bot.on('message', async(message) => {
 				} else {
 					channel.send(author + " Could not shorten url...");
 				}
-			});
-
-			return;
-		}
-
-		//Displays progress towards obtaining Recruiter role on Orbios.
-		if (userinput.startsWith('rprog ')) {
-			if (message.guild.id !== orbios_id && message.guild.id !== debugServer_id) return;
-			let inviteCode = userinput.replace('rprog ', '');
-
-			message.guild.fetchInvites().then(function(res, err) {
-				let invite = res.get(inviteCode);
-				if (invite.uses < 5) channel.send(author + ` **Progress:** ${invite.uses}/5`);
-				else {
-					if (member.roles.exists("name", "Recruiter")) return channel.send(author + " What are you trying to pull here?! You already have the Recruiter role.");
-					if (author.id !== invite.inviter.id) return channel.send(author + " Trying to benefit off of someone else's hard work I see... /ban");
-
-					channel.send(author + ' We need more sheep **I MEAN** people like you... hehe :blue_heart:');
-					member.addRole(message.guild.roles.find("name", "Recruiter"));
-				}
-			}).catch(function(err) {
-				if (err) console.log(err);
-				channel.send(author + " Sorry, I couldn't fetch that... Try again maybe? :P");
 			});
 
 			return;

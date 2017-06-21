@@ -1,6 +1,6 @@
 require('../bot.js');
 
-module.exports.custom = async(message, userinput) => {
+module.exports.custom = async(message, userinput, owner_id) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
