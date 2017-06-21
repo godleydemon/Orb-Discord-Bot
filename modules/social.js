@@ -35,7 +35,7 @@ module.exports.social = async(message) => {
 						return "complete";
 					} else if (content.toLowerCase()
 						.includes("ily") && content.toLowerCase()
-						.includes("ram")) {
+						.includes("ene")) {
 						channel.send(":blue_heart:");
 
 						return "complete";
@@ -53,7 +53,7 @@ module.exports.social = async(message) => {
 					.startsWith("good night") || content.toLowerCase()
 					.startsWith("goodnight")) {
 					if (content.toLowerCase()
-						.includes("ram")) {
+						.includes("ene")) {
 						let user = JQ('users[id=' + author.id + '].GNMessage', {
 							data: PG
 						});
@@ -73,7 +73,7 @@ module.exports.social = async(message) => {
 					.startsWith("goodmorning") || content.toLowerCase()
 					.startsWith("gm")) {
 					if (content.toLowerCase()
-						.includes("ram")) {
+						.includes("ene")) {
 						let user = JQ('users[id=' + author.id + '].GMMessage', {
 							data: PG
 						});
@@ -87,12 +87,12 @@ module.exports.social = async(message) => {
 					}
 				}
 
-				//Replies if someone is asking how to see/use Ram's commands
+				//Replies if someone is asking how to see/use Ene's commands
 				if (content.toLowerCase()
-					.includes("ram") && content.toLowerCase()
+					.includes("ene") && content.toLowerCase()
 					.includes(" commands")) {
 
-					let msgArray = content.split('ram');
+					let msgArray = content.split('ene');
 
 					if (reverseString(msgArray[0]) === '' || reverseString(msgArray[0])
 						.startsWith(' ')) {
@@ -101,7 +101,7 @@ module.exports.social = async(message) => {
 							.startsWith("'s commands") || msgArray[1].toLowerCase()
 							.startsWith(' commands')) {
 
-							channel.send("If you want to see my commands and how to use them please type `@Ram#5325 cmds` or `" + prefix + "cmds`");
+							channel.send("If you want to see my commands and how to use them please type `Ene#5325 cmds` or `" + prefix + "cmds`");
 						}
 					}
 				}
@@ -174,7 +174,7 @@ module.exports.social = async(message) => {
 					}
 				}
 
-				//If someone says ram is ____ (good remark) then it will show some appreciation.
+				//If someone says ene is ____ (good remark) then it will show some appreciation.
 				if (content.toLowerCase()
 					.includes('ene is best') || content.toLowerCase()
 					.includes('ene is waifu') || content.toLowerCase()
