@@ -8,7 +8,7 @@ const twitch = new Twitch({
 });
 
 
-module.exports.twitch = async(Discord, message, userinput, purplehex) => {
+module.exports.twitch = async(Discord, message, userinput, purplehex, GenericErrorMessage) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;

@@ -1,7 +1,7 @@
 require('../bot.js');
 
 
-module.exports.orb = async(Discord, message, userinput, redhex, orbios_id, debugServer_id, orbioslogo) => {
+module.exports.orb = async(Discord, message, userinput, redhex, orbios_id, debugServer_id, orbioslogo, GenericErrorMessage) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
@@ -11,7 +11,7 @@ module.exports.orb = async(Discord, message, userinput, redhex, orbios_id, debug
 		//A bunch of commands for Orbios
 		if (userinput.startsWith('orb ')) {
 			if (message.guild != null) {
-				if (message.guild.id !== orbios_id || message.guild.id !== debugServer_id) return;
+				if (message.guild.id !== orbios_id && message.guild.id !== debugServer_id) return;
 				let what = userinput.replace('orb ', '');
 				let embed;
 
@@ -88,12 +88,14 @@ module.exports.orb = async(Discord, message, userinput, redhex, orbios_id, debug
 					return;
 				}
 
-				channel.send({
-						embed
-					})
-					.catch(function() {
-						channel.send(GenericErrorMessage)
-					});
+				if (embed) {
+					channel.send({
+							embed
+						})
+						.catch(function() {
+							channel.send(GenericErrorMessage)
+						});
+				}
 			}
 		}
 	} catch (e) {

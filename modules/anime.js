@@ -3,7 +3,7 @@ const Anime = require('anime-scraper')
 	.Anime
 
 
-module.exports.anime = async(Discord, message, userinput) => {
+module.exports.anime = async(Discord, message, userinput, GenericErrorMessage) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;

@@ -5,7 +5,7 @@ const config = require("../config.json");
 youTube.setKey(config.youtube_key);
 
 
-module.exports.youtube = async(Discord, message, userinput, redhex) => {
+module.exports.youtube = async(Discord, message, userinput, redhex, GenericErrorMessage) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;

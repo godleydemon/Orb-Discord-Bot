@@ -1,6 +1,6 @@
 require("../bot.js");
 
-module.exports.eval = async(Discord, bot, message, userinput, bluehex, owner_id) => {
+module.exports.eval = async(Discord, bot, message, userinput, bluehex, owner_id, GenericErrorMessage) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;

@@ -4,7 +4,7 @@ const config = require("../config.json");
 const osuapikey = config.osu_apikey;
 
 
-module.exports.osu = async(Discord, message, userinput, self, pinkhex) => {
+module.exports.osu = async(Discord, message, userinput, self, pinkhex, GenericErrorMessage) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;

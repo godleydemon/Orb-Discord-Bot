@@ -2,7 +2,7 @@ require('../bot.js');
 const scraper = require("google-search-scraper");
 
 
-module.exports.google = async(Discord, message, userinput, greenhex) => {
+module.exports.google = async(Discord, message, userinput, greenhex, GenericErrorMessage) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
