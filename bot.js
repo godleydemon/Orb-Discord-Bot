@@ -272,7 +272,7 @@ bot.on('message', async(message) => {
 		if (userinput.startsWith('roll')) {
 			let amount = userinput.replace('roll', '');
 			let text = ['Wow, you got slain by a dragon!', 'Holy moly, you found the ravioli sword!', 'Woah, you leveled up!'];
-			let rnd = Math.floor(Math.random() * 3);
+			let rnd = Math.floor(Math.random() * text.length);
 
 			if (amount.startsWith(' ') && isNumeric(amount) === true) {
 				channel.send(author + " **You rolled:** " + Math.floor(Math.random() * amount + 1) + "\n" + text[rnd]);
