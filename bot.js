@@ -51,6 +51,7 @@ const bluehex = "#00ccff";
 const purplehex = "#8042f4";
 const redhex = "#FF044A";
 const greenhex = "#A3F37A";
+const pinkhex = "#ffb6c1"
 const GenericErrorMessage = "Something seems to have gone wrong... sorry, try again?!";
 var uploaded = false;
 var voice_connection;
@@ -124,22 +125,10 @@ bot.on('message', async(message) => {
 		const channel = await message.channel;
 		const member = await message.guild.fetchMember(message.author);
 
-		// Module Imports //
-		require("./modules/social.js").social(message);
+		// Module Imports (no userinput) //
+		require("./modules/social.js").social(message, orbios_id, debugServer_id, owner_id, self, prefix);
 		require("./modules/logger.js").logger(bot, message);
-		require("./modules/orb.js").orb(Discord, message);
-		require("./modules/moderation.js").moderation(bot, message);
-		require("./modules/osu.js").osu(Discord, message);
-		require("./modules/google.js").google(Discord, message);
-		require("./modules/youtube.js").youtube(Discord, message);
-		require("./modules/twitch.js").twitch(Discord, message);
-		require("./modules/music.js").music(bot, message);
-		require("./modules/anime.js").anime(Discord, message);
-		require("./modules/wallpaper.js").wallpaper(message);
-		require("./modules/custom.js").custom(message);
-		require("./modules/info.js").info(message);
-		// --Module Imports-- //
-
+		// --Module Imports (no userinput)-- //
 
 		//If the message starts with a mention or the prefix assume it's a command and check to see if it is...
 		if (!content.startsWith(self + ' ') && !content.startsWith(prefix)) return;
@@ -159,6 +148,21 @@ bot.on('message', async(message) => {
 			userinput = userinput.substring(1)
 				.toLowerCase();
 		}
+
+		// Module Imports //
+		require("./modules/orb.js").orb(Discord, message, userinput, redhex);
+		require("./modules/moderation.js").moderation(bot, message, userinput, selfid);
+		require("./modules/osu.js").osu(Discord, message, userinput, self, pinkhex);
+		require("./modules/google.js").google(Discord, message, userinput, greenhex);
+		require("./modules/youtube.js").youtube(Discord, message, userinput, redhex);
+		require("./modules/twitch.js").twitch(Discord, message, userinput, purplehex);
+		require("./modules/music.js").music(bot, message, userinput);
+		require("./modules/anime.js").anime(Discord, message, userinput);
+		require("./modules/wallpaper.js").wallpaper(message, userinput);
+		require("./modules/custom.js").custom(message, userinput);
+		require("./modules/info.js").info(message, userinput);
+		require("./modules/eval.js").eval(Discord, bot, message, userinput, bluehex, owner_id);
+		// --Module Imports-- //
 
 		//Displays all commands that are currently available, along with what they do.
 		if (userinput === 'cmds') {
@@ -348,66 +352,6 @@ bot.on('message', async(message) => {
 				if (err) console.log(err);
 				channel.send(author + " Sorry, I couldn't fetch that... Try again maybe? :P");
 			});
-
-			return;
-		}
-
-		//Debugs any JavaScript code using eval.
-		if (userinput.startsWith('eval ')) {
-			if (author.id !== owner_id) return;
-			let code;
-			let res;
-			let lastmsg = message;
-			let thumbnail = "https://media.giphy.com/media/Hh6TxIOIh6o36/giphy.gif";
-
-			try {
-				code = userinput.replace('eval ', '');
-				res = await String(eval(code));
-
-				if (res.length <= 500) {
-					let embed = new Discord.RichEmbed()
-						.setColor(bluehex)
-						.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
-						.setThumbnail(thumbnail)
-						.setDescription('**Eval Result:** :white_check_mark:\n\n**Input:**\n```\n' + code + '\n```\n**Output:**\n```js\n' + res + '\n```');
-
-					lastmsg.delete();
-					channel.send({
-							embed
-						})
-						.catch(function() {
-							channel.send(GenericErrorMessage)
-						});
-				} else {
-					let embed = new Discord.RichEmbed()
-						.setColor(bluehex)
-						.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
-						.setThumbnail(thumbnail)
-						.setDescription('**Eval Result:** :x:\n\n**Input:**\n```\n' + code + '\n```\n**Output:**\n```The output was over 500 chars, so it will not be sent here.```');
-
-					lastmsg.delete();
-					channel.send({
-							embed
-						})
-						.catch(function() {
-							channel.send(GenericErrorMessage)
-						});
-				}
-			} catch (e) {
-				let embed = new Discord.RichEmbed()
-					.setColor(bluehex)
-					.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
-					.setThumbnail(thumbnail)
-					.setDescription('**Eval Result:** :x:\n\n**Input:**\n```\n' + code + '\n```\n**Output:**\n```undefined```');
-
-				lastmsg.delete();
-				channel.send({
-						embed
-					})
-					.catch(function() {
-						channel.send(GenericErrorMessage)
-					});
-			}
 
 			return;
 		}

@@ -1,23 +1,7 @@
 require('../bot.js');
 
-// Global declarations //
-const self = "<@!250943511648534528>";
-const prefix = ";"
-const selfid = "250943511648534528";
-const owner_id = "105640584470937600";
-const orbios_id = "105684379648425984";
-const debugServer_id = "324854543344992277";
-var botpic = "E:/Stuff/Wallpapers & Themes/Pictures/ene_pic.jpg";
-const botpiconline = "http://i.imgur.com/8VuWSCh.jpg";
-const orbioslogo = "http://i.imgur.com/LwPxT50.jpg";
-const bluehex = "#00ccff";
-const purplehex = "#8042f4";
-const redhex = "#FF044A";
-const greenhex = "#A3F37A";
-const GenericErrorMessage = "Something seems to have gone wrong... sorry, try again!";
-// --Global declarations-- //
 
-module.exports.social = async(message) => {
+module.exports.social = async(message, orbios_id, debugServer_id, owner_id, self, prefix) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
