@@ -74,7 +74,39 @@ module.exports.osu = async(Discord, message, userinput, self, pinkhex, GenericEr
 					})
 				}
 			} else if (command.startsWith('p ')) {
-				return channel.send(author + " This feature is currently not implemented.");
+				let usernameplays = command.replace('p ', '');
+
+				getJSON('https://osu.ppy.sh/api/get_user_recent?k=' + osuapikey + '&u=' + usernameplays, function(error, findbeatmap) {
+					if (error) console.log(error);
+					var beatmapID = findbeatmap;
+
+					if (beatmapID[0] != null) {
+						NewBeatmapID = beatmapID[0].beatmap_id
+						getJSON('https://osu.ppy.sh/api/get_beatmaps?k=' + osuapikey + '&u=' + NewBeatmapID, function(error, response) {
+							if (error) console.log(error);
+							var newID = response;
+
+							console.log(newID[0])
+							var embed = new Discord.RichEmbed()
+								.setAuthor("osu! result:", "http://vignette4.wikia.nocookie.net/cytus/images/5/51/Osu_icon.png/revision/latest?cb=20141012114218")
+								.setColor(pinkhex)
+								.setDescription(
+									'***\nBeatmap:***  ' + newID[0].title + '***Version:***  ' + newID[0].version +
+									'\n***Score:***  ' + beatmapID[0].score + '***Max Combo:***  ' + beatmapID[0].maxcombo + '***Rank:***  ' + beatmapID[0].rank +
+									'\n***Star rating:***  ' + parseFloat(newID[0].difficultyrating) + '***OD:***  ' + newID[0].diff_overall + '***CS:***  ' + newID[0].diff_size +
+									'***AR:***  ' + newID[0].diff_approach + '***HP:***  ' + newID[0].diff_drain)
+								.setThumbnail('https://b.ppy.sh/thumb/' + newID[0].beatmapset_id + 'l.jpg')
+								.setURL('https://osu.ppy.sh/b/' + beatmapID[0].beatmap_id + '&m=0');
+
+							channel.send({
+									embed
+								})
+								.catch(function() {
+									channel.send(GenericErrorMessage, true)
+								})
+						})
+					}
+				})
 			}
 		}
 	} catch (e) {
