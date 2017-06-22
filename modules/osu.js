@@ -19,7 +19,7 @@ module.exports.osu = async(Discord, message, userinput, self, pinkhex, GenericEr
 				let username = command.replace('u ', '');
 
 				if (username === self) {
-					var embed = new Discord.RichEmbed()
+					let embed = new Discord.RichEmbed()
 						.setAuthor("osu! result:", "http://vignette4.wikia.nocookie.net/cytus/images/5/51/Osu_icon.png/revision/latest?cb=20141012114218")
 						.setColor(pinkhex)
 						.setDescription(
@@ -42,10 +42,10 @@ module.exports.osu = async(Discord, message, userinput, self, pinkhex, GenericEr
 				} else {
 					getJSON('https://osu.ppy.sh/api/get_user?k=' + osuapikey + '&u=' + username, function(error, response) {
 						if (error) console.log(error);
-						var osuUser = response;
+						let osuUser = response;
 
 						if (osuUser[0] != null) {
-							var embed = new Discord.RichEmbed()
+							let embed = new Discord.RichEmbed()
 								.setAuthor("osu! result:", "http://vignette4.wikia.nocookie.net/cytus/images/5/51/Osu_icon.png/revision/latest?cb=20141012114218")
 								.setColor(pinkhex)
 								.setDescription(
@@ -73,39 +73,36 @@ module.exports.osu = async(Discord, message, userinput, self, pinkhex, GenericEr
 						}
 					})
 				}
-			} else if (command.startsWith('p ')) {
-				let usernameplays = command.replace('p ', '');
+			} else if (command.startsWith('rp ')) {
+				let username = command.replace('rp ', '');
 
-				getJSON('https://osu.ppy.sh/api/get_user_recent?k=' + osuapikey + '&u=' + usernameplays, function(error, findbeatmap) {
-					if (error) console.log(error);
-					var beatmapID = findbeatmap;
+				getJSON('https://osu.ppy.sh/api/get_user_recent?k=' + osuapikey + '&u=' + username, function(err, res) {
+					if (err) return console.log(err);
+					if (!res) return;
 
-					if (beatmapID[0] != null) {
-						NewBeatmapID = beatmapID[0].beatmap_id
-						getJSON('https://osu.ppy.sh/api/get_beatmaps?k=' + osuapikey + '&u=' + NewBeatmapID, function(error, response) {
-							if (error) console.log(error);
-							var newID = response;
+					getJSON('https://osu.ppy.sh/api/get_beatmaps?k=' + osuapikey + '&b=' + res[0].beatmap_id, function(err, res) {
+						if (err) return console.log(err);
+						if (!res) return;
+						console.log(res[0]);
 
-							console.log(newID[0])
-							var embed = new Discord.RichEmbed()
-								.setAuthor("osu! result:", "http://vignette4.wikia.nocookie.net/cytus/images/5/51/Osu_icon.png/revision/latest?cb=20141012114218")
-								.setColor(pinkhex)
-								.setDescription(
-									'***\nBeatmap:***  ' + newID[0].title + '***Version:***  ' + newID[0].version +
-									'\n***Score:***  ' + beatmapID[0].score + '***Max Combo:***  ' + beatmapID[0].maxcombo + '***Rank:***  ' + beatmapID[0].rank +
-									'\n***Star rating:***  ' + parseFloat(newID[0].difficultyrating) + '***OD:***  ' + newID[0].diff_overall + '***CS:***  ' + newID[0].diff_size +
-									'***AR:***  ' + newID[0].diff_approach + '***HP:***  ' + newID[0].diff_drain)
-								.setThumbnail('https://b.ppy.sh/thumb/' + newID[0].beatmapset_id + 'l.jpg')
-								.setURL('https://osu.ppy.sh/b/' + beatmapID[0].beatmap_id + '&m=0');
+						let embed = new Discord.RichEmbed()
+							.setAuthor("osu! result:", "http://vignette4.wikia.nocookie.net/cytus/images/5/51/Osu_icon.png/revision/latest?cb=20141012114218")
+							.setColor(pinkhex)
+							.setDescription("\n"
+								'***Beatmap:***  ' + res[0].title + '***Version:***  ' + res[0].version +
+								'***Score:***  ' + res[0].score + '***Max Combo:***  ' + res[0].maxcombo + '***Rank:***  ' + res[0].rank +
+								'***Star rating:***  ' + parseFloat(res[0].difficultyrating) + '***OD:***  ' + res[0].diff_overall + '***CS:***  ' + res[0].diff_size +
+								'***AR:***  ' + res[0].diff_approach + '***HP:***  ' + res[0].diff_drain)
+							.setThumbnail('https://b.ppy.sh/thumb/' + res[0].beatmapset_id + 'l.jpg')
+							.setURL('https://osu.ppy.sh/b/' + res[0].beatmap_id + '&m=0');
 
-							channel.send({
-									embed
-								})
-								.catch(function() {
-									channel.send(GenericErrorMessage, true)
-								})
-						})
-					}
+						channel.send({
+								embed
+							})
+							.catch(function() {
+								channel.send(GenericErrorMessage, true)
+							})
+					})
 				})
 			}
 		}
