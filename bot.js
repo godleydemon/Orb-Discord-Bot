@@ -152,14 +152,14 @@ bot.on('message', async(message) => {
 		// Module Imports //
 		require("./modules/orb.js").orb(Discord, message, userinput, redhex, orbios_id, debugServer_id, orbioslogo, GenericErrorMessage);
 		require("./modules/moderation.js").moderation(bot, message, userinput, selfid);
-		require("./modules/osu.js").osu(Discord, message, userinput, self, pinkhex, GenericErrorMessage);
+		require("./modules/osu.js").osu(Discord, message, userinput, self, pinkhex, GenericErrorMessage, getJSON);
 		require("./modules/google.js").google(Discord, message, userinput, greenhex, GenericErrorMessage);
 		require("./modules/youtube.js").youtube(Discord, message, userinput, redhex, GenericErrorMessage);
 		require("./modules/twitch.js").twitch(Discord, message, userinput, purplehex, GenericErrorMessage);
 		require("./modules/music.js").music(bot, message, userinput);
 		require("./modules/anime.js").anime(Discord, message, userinput, GenericErrorMessage);
 		require("./modules/wallpaper.js").wallpaper(message, userinput);
-		require("./modules/custom.js").custom(message, userinput, owner_id);
+		require("./modules/custom.js").custom(message, userinput, owner_id, fs, getJSON);
 		require("./modules/info.js").info(message, userinput);
 		require("./modules/eval.js").eval(Discord, bot, message, userinput, bluehex, owner_id, GenericErrorMessage);
 		// --Module Imports-- //

@@ -1,10 +1,9 @@
 require('../bot.js');
-const getJSON = require('get-json');
 const config = require("../config.json");
 const osuapikey = config.osu_apikey;
 
 
-module.exports.osu = async(Discord, message, userinput, self, pinkhex, GenericErrorMessage) => {
+module.exports.osu = async(Discord, message, userinput, self, pinkhex, GenericErrorMessage, getJSON) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
