@@ -20,6 +20,14 @@ module.exports.custom = async(message, userinput, owner_id, fs, getJSON) => {
 			let customMsg = userinput.replace('custom gm ', '');
 			getJSON('./test.json', function(err, res) {
 				console.log(res);
+				let json = JSON.stringify({
+					id: author.id,
+					GMMessage: customMsg
+				})
+
+				fs.appendFile('./test.json', json, function(err) {
+					if (err) return console.log(err);
+				});
 			})
 
 			/*
