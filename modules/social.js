@@ -180,8 +180,9 @@ module.exports.social = async(message, orbios_id, debugServer_id, owner_id, self
 
 				//If an announcement is made which has :thumbsup: and :thumbsdown: assume it's a vote of some sort and add the reactions.
 				if (author.id === owner_id && content.includes('👍') && content.includes('👎')) {
-					message.react("👍");
-					message.react("👎");
+					message.react("👍").then(function() {
+						message.react("👎");
+					});
 				}
 
 				//If someone doesn't put a role after sr, reply to them.

@@ -80,7 +80,7 @@ module.exports.music = async(bot, message) => {
 				});
 
 
-				var _flagCheck = setInterval(function() { //Will keep waiting until ytvid is defined and then will continue.
+				let _flagCheck = setInterval(function() { //Will keep waiting until ytvid is defined and then will continue.
 					if (ytvid) {
 						clearInterval(_flagCheck);
 
