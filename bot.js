@@ -22,9 +22,9 @@ const commands = require("./commands.json");
 const Cleverbot = require('cleverbot-node');
 const cb = new Cleverbot;
 
-const JQ = require('json-query');
+const jsonquery = require('json-query');
 
-const PG = require('./personalized_messages.json');
+const PMessages = require('./personalized_messages.json');
 
 const getJSON = require('get-json');
 
@@ -159,7 +159,7 @@ bot.on('message', async(message) => {
 		require("./modules/music.js").music(bot, message, userinput);
 		require("./modules/anime.js").anime(Discord, message, userinput, GenericErrorMessage);
 		require("./modules/wallpaper.js").wallpaper(message, userinput);
-		require("./modules/custom.js").custom(message, userinput, owner_id, fs, getJSON);
+		require("./modules/custom.js").custom(message, userinput, owner_id, fs);
 		require("./modules/info.js").info(message, userinput);
 		require("./modules/eval.js").eval(Discord, bot, message, userinput, bluehex, owner_id, GenericErrorMessage);
 		// --Module Imports-- //

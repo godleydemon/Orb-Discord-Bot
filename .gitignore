@@ -6,3 +6,4 @@ config.json
 Heroku_Push.bat
 package-lock.json
 run.bat
+personalized_messages.json

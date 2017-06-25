@@ -1,6 +1,6 @@
 require('../bot.js');
 
-module.exports.custom = async(message, userinput, owner_id, fs, getJSON) => {
+module.exports.custom = async(message, userinput, owner_id, fs) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
@@ -9,35 +9,53 @@ module.exports.custom = async(message, userinput, owner_id, fs, getJSON) => {
 
 		if (userinput.startsWith("custom gn ")) {
 			let customMsg = userinput.replace('custom gn ', '');
+			let jsonFile = './personalized_messages.json';
 
-			message.guild.members.get(owner_id)
-				.send(author.username + " Has requested their GN message to be set to `" + customMsg + "`");
-			channel.send(author + " Your request to get a custom GN message has been sent to Zeval. It may take up to 24 hours to be implemented (if accepted). But usually, if he is online, it will only take 1-5 hours at most.");
-			return;
+			fs.readFile(jsonFile, function(err, data) {
+				if (err) return console.log(err);
+				data = JSON.parse(data);
+
+				if (!data[author.id]) {
+					data[author.id] = {
+						gm: '',
+						gn: customMsg
+					};
+
+					fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
+						if (err) return console.log(err);
+					})
+				} else {
+					data[author.id].gn = customMsg;
+					fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
+						if (err) return console.log(err);
+					})
+				}
+			})
 		}
 
 		if (userinput.startsWith("custom gm ")) {
 			let customMsg = userinput.replace('custom gm ', '');
-			getJSON('./test.json', function(error, response) {
-				console.log(response);
-				let obj = JSON.parse(response);
-				obj.push({
-					id: author.id,
-					GMMessage: customMsg
-				});
-				let json = JSON.stringify(obj);
+			let jsonFile = './personalized_messages.json';
 
-				fs.writeFile('./test.json', json, function(err) {
-					if (err) return console.log(err);
-				});
+			fs.readFile(jsonFile, function(err, data) {
+				data = JSON.parse(data);
+
+				if (!data[author.id]) {
+					data[author.id] = {
+						gm: customMsg,
+						gn: ''
+					};
+
+					fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
+						if (err) return console.log(err);
+					})
+				} else {
+					data[author.id].gm = customMsg;
+					fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
+						if (err) return console.log(err);
+					})
+				}
 			})
-
-			/*
-			fs.writeFile('./test.json', customMsg, function(err) {
-				if (err) return console.log(err);
-			});
-			*/
-			console.log(customMsg);
 		}
 
 	} catch (e) {
