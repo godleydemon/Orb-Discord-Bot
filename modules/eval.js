@@ -12,23 +12,18 @@ module.exports.eval = async(Discord, bot, message, userinput, bluehex, owner_id,
 		//Debugs any JavaScript code using eval.
 		if (userinput.startsWith('eval ')) {
 			if (author.id !== owner_id) return;
-			let code;
-			let res;
-			let lastmsg = message;
+			let code = userinput.replace('eval ', '');
+			let res = await String(eval(code));
 			let thumbnail = "https://media.giphy.com/media/Hh6TxIOIh6o36/giphy.gif";
 
 			try {
-				code = userinput.replace('eval ', '');
-				res = await String(eval(code));
-
-				if (res.length <= 500) {
+				if (res != "undefined" && res != "null" && res != "") {
 					let embed = new Discord.RichEmbed()
 						.setColor(bluehex)
 						.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
 						.setThumbnail(thumbnail)
 						.setDescription('**Eval Result:** :white_check_mark:\n\n**Input:**\n```\n' + code + '\n```\n**Output:**\n```js\n' + res + '\n```');
 
-					lastmsg.delete();
 					channel.send({
 							embed
 						})
@@ -40,9 +35,8 @@ module.exports.eval = async(Discord, bot, message, userinput, bluehex, owner_id,
 						.setColor(bluehex)
 						.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
 						.setThumbnail(thumbnail)
-						.setDescription('**Eval Result:** :x:\n\n**Input:**\n```\n' + code + '\n```\n**Output:**\n```The output was over 500 chars, so it will not be sent here.```');
+						.setDescription('**Eval Result:** :x:\n\n**Input:**\n```\n' + code + '\n```\n**Error:**\n```js\n' + res + '\n```');
 
-					lastmsg.delete();
 					channel.send({
 							embed
 						})
@@ -51,13 +45,15 @@ module.exports.eval = async(Discord, bot, message, userinput, bluehex, owner_id,
 						});
 				}
 			} catch (e) {
+				console.log(e.name);
+				console.log(e.message);
+
 				let embed = new Discord.RichEmbed()
 					.setColor(bluehex)
 					.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
 					.setThumbnail(thumbnail)
-					.setDescription('**Eval Result:** :x:\n\n**Input:**\n```\n' + code + '\n```\n**Output:**\n```undefined```');
+					.setDescription('**Eval Result:** :x:\n\n**Input:**\n```\n' + code + '\n```\n**Error:**\n```' + e.name + '\n' + e.message + '```');
 
-				lastmsg.delete();
 				channel.send({
 						embed
 					})
