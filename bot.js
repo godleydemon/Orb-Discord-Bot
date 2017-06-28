@@ -16,15 +16,17 @@ const bot = new Discord.Client({
 	messageSweepInterval: 60
 });
 
-const config = require("./config.json");
-const commands = require("./commands.json");
+const config = require("./JSON/config.json");
+const commands = require("./JSON/commands.json");
 
 const Cleverbot = require('cleverbot-node');
 const cb = new Cleverbot;
 
 const jsonquery = require('json-query');
 
-const PMessages = require('./personalized_messages.json');
+const PMessages = require('./JSON/personalized_messages.json');
+
+const ILinks = require('./JSON/invite_links.json');
 
 const getJSON = require('get-json');
 

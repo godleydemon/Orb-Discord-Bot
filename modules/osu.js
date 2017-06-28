@@ -1,5 +1,5 @@
 require('../bot.js');
-const config = require("../config.json");
+const config = require("../JSON/config.json");
 const osuapikey = config.osu_apikey;
 
 

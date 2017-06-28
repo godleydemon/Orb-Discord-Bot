@@ -1,7 +1,7 @@
 require('../bot.js');
 const YouTube = require("youtube-node");
 const youTube = new YouTube();
-const config = require("../config.json");
+const config = require("../JSON/config.json");
 youTube.setKey(config.youtube_key);
 
 

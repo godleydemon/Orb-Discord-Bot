@@ -1,5 +1,5 @@
 require('../bot.js');
-const config = require("../config.json");
+const config = require("../JSON/config.json");
 const Twitch = require("twitch-api");
 const twitch = new Twitch({
 	clientId: config.twitch_clientid,
