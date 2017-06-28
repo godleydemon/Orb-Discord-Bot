@@ -128,7 +128,7 @@ bot.on('message', async(message) => {
 		const member = await message.guild.fetchMember(message.author);
 
 		// Module Imports (no userinput) //
-		require("./modules/social.js").social(message, orbios_id, debugServer_id, owner_id, self, prefix);
+		require("./modules/social.js").social(message, orbios_id, debugServer_id, owner_id, self, prefix, fs);
 		require("./modules/logger.js").logger(bot, message);
 		// --Module Imports (no userinput)-- //
 
