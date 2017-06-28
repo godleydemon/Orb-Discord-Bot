@@ -26,8 +26,6 @@ const jsonquery = require('json-query');
 
 const PMessages = require('./JSON/personalized_messages.json');
 
-const ILinks = require('./JSON/invite_links.json');
-
 const getJSON = require('get-json');
 
 const Cryptr = require('cryptr');
@@ -48,13 +46,14 @@ const orbios_id = "105684379648425984";
 const debugServer_id = "324854543344992277";
 const botpic = "E:/Stuff/Wallpapers & Themes/Pictures/ene_pic.jpg";
 const botpiconline = "http://i.imgur.com/8VuWSCh.jpg";
-const orbioslogo = "http://i.imgur.com/LwPxT50.jpg";
+const orbioslogo = "http://i68.tinypic.com/2n9wa6a.png";
 const bluehex = "#00ccff";
 const purplehex = "#8042f4";
 const redhex = "#FF044A";
 const greenhex = "#A3F37A";
-const pinkhex = "#ffb6c1"
-const GenericErrorMessage = "Something seems to have gone wrong... sorry, try again?!";
+const pinkhex = "#ffb6c1";
+const orangehex = "#f49e42";
+const GenericErrorMessage = "Something seems to have gone wrong... Sorry, try again?!";
 var uploaded = false;
 var voice_connection;
 var d = new Date();
@@ -152,7 +151,7 @@ bot.on('message', async(message) => {
 		}
 
 		// Module Imports //
-		require("./modules/orb.js").orb(Discord, message, userinput, redhex, orbios_id, debugServer_id, orbioslogo, GenericErrorMessage);
+		require("./modules/orb.js").orb(Discord, message, userinput, orangehex, orbios_id, debugServer_id, orbioslogo, GenericErrorMessage);
 		require("./modules/moderation.js").moderation(bot, message, userinput, selfid);
 		require("./modules/osu.js").osu(Discord, message, userinput, self, pinkhex, GenericErrorMessage, getJSON);
 		require("./modules/google.js").google(Discord, message, userinput, greenhex, GenericErrorMessage);
