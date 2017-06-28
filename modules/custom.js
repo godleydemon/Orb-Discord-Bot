@@ -9,7 +9,7 @@ module.exports.custom = async(message, userinput, owner_id, fs) => {
 
 		if (userinput.startsWith("custom gn ")) {
 			let customMsg = userinput.replace('custom gn ', '');
-			let jsonFile = './personalized_messages.json';
+			let jsonFile = './JSON/personalized_messages.json';
 
 			fs.readFile(jsonFile, function(err, data) {
 				if (err) return console.log(err);
@@ -35,7 +35,7 @@ module.exports.custom = async(message, userinput, owner_id, fs) => {
 
 		if (userinput.startsWith("custom gm ")) {
 			let customMsg = userinput.replace('custom gm ', '');
-			let jsonFile = './personalized_messages.json';
+			let jsonFile = './JSON/personalized_messages.json';
 
 			fs.readFile(jsonFile, function(err, data) {
 				data = JSON.parse(data);
