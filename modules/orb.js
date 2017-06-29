@@ -39,7 +39,7 @@ module.exports.orb = async(Discord, message, userinput, orangehex, orbios_id, de
 				} else if (what.startsWith("sr ")) {
 					let role = what.replace("sr ", "");
 
-					if (!message.guild.roles.find("name", role) || guild.roles.exists("name", role) === false) {
+					if (!message.guild.roles.find("name", role)) {
 						embed = new Discord.RichEmbed()
 							.setColor(orangehex)
 							.setThumbnail(orbioslogo)
