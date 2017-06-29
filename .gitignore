@@ -4,4 +4,5 @@ ascii.txt
 song.mp3
 Heroku_Push.bat
 package-lock.json
-JSON
+JSON/config.json
+JSON/personalized_messages.json
