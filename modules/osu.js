@@ -1,10 +1,9 @@
 require('../bot.js');
-const getJSON = require('get-json');
-const config = require("../config.json");
+const config = require("../JSON/config.json");
 const osuapikey = config.osu_apikey;
 
 
-module.exports.osu = async(Discord, message, userinput, self, pinkhex, GenericErrorMessage) => {
+module.exports.osu = async(Discord, message, userinput, self, pinkhex, GenericErrorMessage, getJSON) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
@@ -79,43 +78,41 @@ module.exports.osu = async(Discord, message, userinput, self, pinkhex, GenericEr
 				getJSON('https://osu.ppy.sh/api/get_user_recent?k=' + osuapikey + '&u=' + username, function(err, res) {
 					if (err) return console.log(err);
 					if (!res) return;
-					let result = res;
+					let result = res[0];
 
-					getJSON('https://osu.ppy.sh/api/get_scores?k=' + osuapikey + '&b=' + result[0].beatmap_id + '&u=' + result[0].user_id, function(err, res) {
+					getJSON('https://osu.ppy.sh/api/get_scores?k=' + osuapikey + '&b=' + result.beatmap_id + '&u=' + result.user_id, function(err, res) {
 						if (err) return console.log(err);
 						if (!res) return;
-						let findpp = res;
-						console.log(findpp[0]);
+						let findpp = res[0];
+						console.log(findpp);
 
-						let hit300 = findpp[0].count300;
-						let hit100 = findpp[0].count100;
-						let hit50 = findpp[0].count50;
-						let hitMiss = findpp[0].countmiss;
+						let hit300 = findpp.count300;
+						let hit100 = findpp.count100;
+						let hit50 = findpp.count50;
+						let hitMiss = findpp.countmiss;
 						let actualScore = hit300 * 300 + hit100 * 100 + hit50 * 50 + hitMiss * 0;
 						let perfectScore = hit300 * 300 + hit100 * 300 + hit50 * 300 + hitMiss * 300;
 						let beatmapAcc = (actualScore / perfectScore) * 100;
 						console.log(beatmapAcc);
 
-						getJSON('https://osu.ppy.sh/api/get_beatmaps?k=' + osuapikey + '&b=' + result[0].beatmap_id, function(err, res) {
+						getJSON('https://osu.ppy.sh/api/get_beatmaps?k=' + osuapikey + '&b=' + result.beatmap_id, function(err, res) {
 							if (err) return console.log(err);
 							if (!res) return;
 							console.log(res[0]);
+							res = res[0];
 
 							let embed = new Discord.RichEmbed()
-								.setAuthor("osu! result:", "http://vignette4.wikia.nocookie.net/cytus/images/5/51/Osu_icon.png/revision/latest?cb=20141012114218")
+								.setAuthor("Replay Result", "http://vignette4.wikia.nocookie.net/cytus/images/5/51/Osu_icon.png/revision/latest?cb=20141012114218")
 								.setColor(pinkhex)
 								.setDescription("\n" +
-									'**' + res[0].title + '**' + '(' + res[0].version + ')' + '     ' +
-									'+' + parseFloat(findpp[0].pp).toFixed(0) + 'pp' +
-									"\n" + '**Star rating:**  ' + parseFloat(res[0].difficultyrating).toFixed(2) +
-									"\n" + 'OD: ' + res[0].diff_overall + 'CS: ' + res[0].diff_size +
-									+'AR: ' + res[0].diff_approach + 'HP: ' + res[0].diff_drain +
-									"\n" + '**Score:**  ' + result[0].score +
-									'\n' + '**Max Combo:**  ' + result[0].maxcombo +
-									'\n' + '**Rank Achieved:**  ' + result[0].rank +
-									'\n' + '**Accuracy:**  ' + parseFloat(beatmapAcc).toFixed(2))
-								.setThumbnail('https://b.ppy.sh/thumb/' + res[0].beatmapset_id + 'l.jpg')
-								.setURL('https://osu.ppy.sh/b/' + res[0].beatmap_id + '&m=0');
+									`**Version:** ${res.version}\n` +
+									`**PP:** ${parseFloat(findpp.pp).toFixed(0)}\n` +
+									`**Stars:** ${parseFloat(res.difficultyrating).toFixed(2)}\n` +
+									`**Score:** ${result.score}  **|**  **Max Combo:** ${result.maxcombo}\n` +
+									`**Accuracy:** ${parseFloat(beatmapAcc).toFixed(2)}  **|**  **Rank Achieved:** ${result.rank}\n`
+								)
+								.setThumbnail('https://b.ppy.sh/thumb/' + res.beatmapset_id + 'l.jpg')
+								.setURL('https://osu.ppy.sh/b/' + res.beatmap_id + '&m=0');
 
 							channel.send({
 									embed
