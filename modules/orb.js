@@ -33,7 +33,7 @@ module.exports.orb = async(Discord, message, userinput, orangehex, orbios_id, de
 					embed = new Discord.RichEmbed()
 						.setColor(orangehex)
 						.setTitle("Roles List")
-						.setURL("https://my.mixtape.moe/hkpuhq.txt")
+						.setURL("https://my.mixtape.moe/ydvqfe.txt")
 						.setThumbnail(orbioslogo)
 						.setDescription("See all the available roles by clicking the link above!");
 				} else if (what.startsWith("sr ")) {
