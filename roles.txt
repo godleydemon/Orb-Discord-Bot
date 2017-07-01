@@ -1,5 +1,7 @@
 The roles that can be self assigned are as follows:
 
+dnd
+sfw
 lol player
 csgo player
 wow player
@@ -14,8 +16,6 @@ tera player
 overwatch player
 gmod player
 rss player
-dnd
-sfw
 
 
 All of the above are case sensitive.
