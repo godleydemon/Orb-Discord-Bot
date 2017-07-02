@@ -28,7 +28,7 @@ module.exports.custom = async(message, userinput, owner_id, fs) => {
 					data[author.id].gn = customMsg;
 					fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
 						if (err) return console.log(err);
-						channel.send(author + " Your custom message has been set :blue_heart:");
+						channel.send(author + " Your custom message has been set :large_orange_diamond:");
 					})
 				}
 			})
@@ -54,7 +54,7 @@ module.exports.custom = async(message, userinput, owner_id, fs) => {
 					data[author.id].gm = customMsg;
 					fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
 						if (err) return console.log(err);
-						channel.send(author + " Your custom message has been set :blue_heart:");
+						channel.send(author + " Your custom message has been set :large_orange_diamond:");
 					})
 				}
 			})

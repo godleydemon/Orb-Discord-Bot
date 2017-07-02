@@ -14,18 +14,18 @@ module.exports.social = async(message, orbios_id, debugServer_id, owner_id, self
 				//Respond to owner confessing love
 				if (author.id === owner_id || member.roles.exists('name', 'Developer')) {
 					if (content === "❤" || content === "<3") {
-						channel.send(":blue_heart:");
+						channel.send(":large_orange_diamond:");
 
 						return "complete";
 					} else if (content.toLowerCase()
 						.includes("ily") && content.toLowerCase()
-						.includes("ene")) {
-						channel.send(":blue_heart:");
+						.includes("orb")) {
+						channel.send(":large_orange_diamond:");
 
 						return "complete";
 					} else if (content.toLowerCase()
 						.includes("ily") && content.includes(self)) {
-						channel.send(":blue_heart:");
+						channel.send(":large_orange_diamond:");
 
 						return "complete";
 					}
@@ -37,7 +37,7 @@ module.exports.social = async(message, orbios_id, debugServer_id, owner_id, self
 					.startsWith("good night") || content.toLowerCase()
 					.startsWith("goodnight")) {
 					if (content.toLowerCase()
-						.includes("ene")) {
+						.includes("orb")) {
 						let jsonFile = './JSON/personalized_messages.json';
 
 						fs.readFile(jsonFile, function(err, data) {
@@ -60,7 +60,7 @@ module.exports.social = async(message, orbios_id, debugServer_id, owner_id, self
 					.startsWith("goodmorning") || content.toLowerCase()
 					.startsWith("gm")) {
 					if (content.toLowerCase()
-						.includes("ene")) {
+						.includes("orb")) {
 						let jsonFile = './JSON/personalized_messages.json';
 
 						fs.readFile(jsonFile, function(err, data) {
@@ -70,19 +70,19 @@ module.exports.social = async(message, orbios_id, debugServer_id, owner_id, self
 							if (data[author.id].gm) {
 								channel.send(author + " " + data[author.id].gm);
 							} else {
-								channel.send(author + " Good morning! Glad to see you back! :blue_heart:");
+								channel.send(author + " Good morning! Glad to see you back! :large_orange_diamond:");
 							}
 						})
 						return "complete";
 					}
 				}
 
-				//Replies if someone is asking how to see/use Ene's commands
+				//Replies if someone is asking how to see/use orb's commands
 				if (content.toLowerCase()
-					.includes("ene") && content.toLowerCase()
+					.includes("orb") && content.toLowerCase()
 					.includes(" commands")) {
 
-					let msgArray = content.split('ene');
+					let msgArray = content.split('orb');
 
 					if (reverseString(msgArray[0]) === '' || reverseString(msgArray[0])
 						.startsWith(' ')) {
@@ -91,7 +91,7 @@ module.exports.social = async(message, orbios_id, debugServer_id, owner_id, self
 							.startsWith("'s commands") || msgArray[1].toLowerCase()
 							.startsWith(' commands')) {
 
-							channel.send("If you want to see my commands and how to use them please type `Ene#5325 cmds` or `" + prefix + "cmds`");
+							channel.send("If you want to see my commands and how to use them please type `orb#5325 cmds` or `" + prefix + "cmds`");
 						}
 					}
 				}
@@ -164,22 +164,22 @@ module.exports.social = async(message, orbios_id, debugServer_id, owner_id, self
 					}
 				}
 
-				//If someone says ene is ____ (good remark) then it will show some appreciation.
+				//If someone says orb is ____ (good remark) then it will show some appreciation.
 				if (content.toLowerCase()
-					.includes('ene is best') || content.toLowerCase()
-					.includes('ene is waifu') || content.toLowerCase()
-					.includes('ene is the best') || content.toLowerCase()
-					.includes("ene's the best") || content.toLowerCase()
-					.includes("ene is better")) {
+					.includes('orb is best') || content.toLowerCase()
+					.includes('orb is waifu') || content.toLowerCase()
+					.includes('orb is the best') || content.toLowerCase()
+					.includes("orb's the best") || content.toLowerCase()
+					.includes("orb is better")) {
 					if (content.toLowerCase()
 						.includes('not') === false && content.toLowerCase()
 						.includes('jk') === false && content.toLowerCase()
 						.includes('kidding') === false && content.toLowerCase()
 						.includes('kappa') === false) {
 						if (author.id === owner_id) {
-							channel.send("Thank you, master... :blue_heart:");
+							channel.send("Thank you, master... :large_orange_diamond:");
 						} else {
-							channel.send(":blue_heart:");
+							channel.send(":large_orange_diamond:");
 						}
 					}
 				}

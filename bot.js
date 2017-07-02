@@ -63,8 +63,6 @@ let Month = d.getMonth();
 bot.on('ready', () => {
 	console.log("Bot login successfull");
 	bot.user.setGame(";cmds");
-	//bot.user.setUsername("Orb");
-	//bot.user.setAvatar(botpic);
 });
 
 bot.on('presenceUpdate', async(oldMember, newMember) => {
@@ -160,7 +158,7 @@ bot.on('message', async(message) => {
 		require("./modules/google.js").google(Discord, message, userinput, greenhex, GenericErrorMessage);
 		require("./modules/youtube.js").youtube(Discord, message, userinput, redhex, GenericErrorMessage);
 		require("./modules/twitch.js").twitch(Discord, message, userinput, purplehex, GenericErrorMessage);
-		require("./modules/music.js").music(bot, message, userinput);
+		require("./modules/music.js").music(bot, message, userinput, self);
 		require("./modules/anime.js").anime(Discord, message, userinput, GenericErrorMessage);
 		require("./modules/wallpaper.js").wallpaper(message, userinput);
 		require("./modules/custom.js").custom(message, userinput, owner_id, fs);
@@ -207,7 +205,7 @@ bot.on('message', async(message) => {
 			return;
 		}
 
-		//Provides a link that can be used to invite Ene to a new Discord server.
+		//Provides a link that can be used to invite Orb to a new Discord server.
 		if (userinput === 'join') {
 			let embed = new Discord.RichEmbed()
 				.setTitle("Invite to server")
@@ -243,7 +241,7 @@ bot.on('message', async(message) => {
 			return;
 		}
 
-		//Sends a link to the Ene Discord server.
+		//Sends a link to the orb Discord server.
 		if (userinput === 'server') {
 			let embed = new Discord.RichEmbed()
 				.setTitle("Join my server")
@@ -356,7 +354,7 @@ bot.on('message', async(message) => {
 		if (cbaccess === true) {
 			if (message.channel.type === "dm" || message.channel.type === "text") {
 				Cleverbot.prepare(function() {
-					cb.write(message.cleanContent.replace("@Ene ", ""), function(response) {
+					cb.write(message.cleanContent.replace("@orb ", ""), function(response) {
 						if (response.message === "<html>" || response.status === '401') {
 							channel.send("The talking functionality appears to currently be out-of-order. This may take a while to fix.");
 						} else {
