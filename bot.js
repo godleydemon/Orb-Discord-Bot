@@ -434,7 +434,7 @@ function isNumeric(n) {
 }
 
 //Logs into the bot account
-bot.login('MjUwOTQzNTExNjQ4NTM0NTI4.DCvATw.Co87zqfLN51B2DWl8nuugElepDQ').catch(e => console.error(e));
+bot.login(config.bot_debug_token).catch(e => console.error(e));
 
 bot.on('error', (e) => {
 	console.error(e);
