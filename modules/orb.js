@@ -45,7 +45,7 @@ module.exports.orb = async(Discord, message, userinput, orangehex, orbios_id, de
 							.setThumbnail(orbioslogo)
 							.setTitle("Error")
 							.setDescription(`Assigning the role failed... Maybe you spelt it wrong?`);
-					} else {
+					} else if (role.endsWith("player") === true || role === 'dnd' || role === 'SFW') {
 						member.addRoles(message.guild.roles.find("name", role));
 						embed = new Discord.RichEmbed()
 							.setColor(orangehex)
