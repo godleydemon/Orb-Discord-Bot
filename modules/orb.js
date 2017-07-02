@@ -1,7 +1,7 @@
 require('../bot.js');
 
 
-module.exports.orb = async(Discord, message, userinput, orangehex, orbios_id, debugServer_id, orbioslogo, GenericErrorMessage) => {
+module.exports.orb = async(Discord, bot, message, userinput, orangehex, orbios_id, debugServer_id, orbioslogo, GenericErrorMessage, fs) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
@@ -23,12 +23,63 @@ module.exports.orb = async(Discord, message, userinput, orangehex, orbios_id, de
 						.setThumbnail(orbioslogo)
 						.setDescription("The home to all sorts of useful and fancy things!");
 				} else if (what === "invite") {
-					embed = new Discord.RichEmbed()
-						.setColor(orangehex)
-						.setTitle("Permanent Invite Link")
-						.setURL("https://discord.gg/invite/0abEJoLeXf9kswil")
-						.setThumbnail(orbioslogo)
-						.setDescription("Invite your friends using the link above!");
+					let jsonFile = "./JSON/invites.json";
+
+					fs.readFile(jsonFile, function(err, data) {
+						data = JSON.parse(data);
+
+						if (data[author.id]) {
+
+							bot.fetchInvite(data[author.id].code).then(function(invite) {
+								embed = new Discord.RichEmbed()
+									.setColor(orangehex)
+									.setTitle("Your Invite Link")
+									.setThumbnail(orbioslogo)
+									.setURL(invite.url)
+									.setDescription("Invite 5 people within 24 hours and you will get the **Recruiter** role!");
+							}).catch(function(err) {
+								message.guild.channels.get('105684379648425984').createInvite({
+									reason: "User requested invite for Orbios."
+								}).then(function(invite, err) {
+
+									data[author.id].url = invite.url;
+									data[author.id].uses = invite.uses;
+									data[author.id].code = invite.code;
+									embed = new Discord.RichEmbed()
+										.setColor(orangehex)
+										.setTitle("Your Invite Link")
+										.setThumbnail(orbioslogo)
+										.setURL(invite.url)
+										.setDescription("Invite 5 people within 24 hours and you will get the **Recruiter** role!");
+
+									fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
+										if (err) return console.log(err);
+									})
+								});
+							})
+						} else {
+							message.guild.channels.get('105684379648425984').createInvite({
+								reason: "User requested invite for Orbios."
+							}).then(function(invite, err) {
+
+								data[author.id] = {
+									url: invite.url,
+									uses: invite.uses,
+									code: invite.code
+								};
+								embed = new Discord.RichEmbed()
+									.setColor(orangehex)
+									.setTitle("Your Invite Link")
+									.setThumbnail(orbioslogo)
+									.setURL(invite.url)
+									.setDescription("Invite 5 people within 24 hours and you will get the **Recruiter** role!");
+
+								fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
+									if (err) return console.log(err);
+								})
+							});
+						}
+					})
 				} else if (what === "roles") {
 					embed = new Discord.RichEmbed()
 						.setColor(orangehex)
@@ -67,55 +118,21 @@ module.exports.orb = async(Discord, message, userinput, orangehex, orbios_id, de
 						.setTitle("Puzzle Link")
 						.setURL("http://orbios.netau.net/Orbiospuzzle/")
 						.setDescription("I wish you the best of luck with the puzzle!");
-				} else if (what.startsWith('rprog ')) {
-					let inviteCode = what.replace('rprog ', '');
-
-					message.guild.fetchInvites().then(function(res, err) {
-						let invite = res.get(inviteCode);
-
-						if (invite.uses < 5) channel.send(author + ` **Progress:** ${invite.uses}/5`);
-						else {
-							if (member.roles.exists("name", "Recruiter")) return channel.send(author + " What are you trying to pull here?! You already have the Recruiter role.");
-							if (author.id !== invite.inviter.id) return channel.send(author + " Trying to benefit off of someone else's hard work I see... /ban");
-
-							channel.send(author + ' We need more sheep **I MEAN** people like you... hehe :blue_heart:');
-							member.addRole(message.guild.roles.find("name", "Recruiter"));
-						}
-					}).catch(function(err) {
-						if (err) console.log(err);
-						channel.send(author + " Sorry, I couldn't fetch that... Try again maybe? :P");
-					});
-				} else if (what === "finvites") {
-					let invitesMessage;
-					await message.guild.fetchInvites().then(function(invite, err) {
-						invite.forEach(function(invite) {
-							if (author.id === invite.inviter.id && invite.maxAge === 0) {
-								invitesMessage += "\n`Invite Details`\n" + "**Invite URL:** <" + invite.url + "> \n**Invite Code:** " + invite.code + "\n**Invite Uses:** " + invite.uses + "\n**Invite Expiry:** " + "Never\n";
-							}
-						})
-
-						if (!invitesMessage) return channel.send(author + " You don't appear to have any permanent invites for this server...");
-
-						invitesMessage = invitesMessage.replace('undefined', '');
-						embed = new Discord.RichEmbed()
-							.setColor(orangehex)
-							.setThumbnail(orbioslogo)
-							.setDescription(invitesMessage);
-
-					}).catch(function(err) {
-						if (err) console.log(err);
-						channel.send(author + " Sorry, I couldn't fetch the invites... Maybe you didn't invite anyone? (lazy fk :cry:) jk :P");
-					})
 				} else {
 					return;
 				}
 
-				channel.send({
-						embed
-					})
-					.catch(function() {
-						channel.send(GenericErrorMessage)
-					});
+				let _flagCheck = setInterval(function() {
+					if (embed) {
+						clearInterval(_flagCheck);
+						channel.send({
+								embed
+							})
+							.catch(function() {
+								channel.send(GenericErrorMessage)
+							});
+					}
+				}, 100);
 			}
 		}
 	} catch (e) {

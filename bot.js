@@ -44,7 +44,7 @@ const selfid = "250943511648534528";
 const owner_id = "105640584470937600";
 const orbios_id = "105684379648425984";
 const debugServer_id = "324854543344992277";
-const botpic = "E:/Stuff/Wallpapers & Themes/Pictures/ene_pic.jpg";
+const botpic = "E:/Stuff/Wallpapers & Themes/Pictures/orb_anime.png";
 const botpiconline = "http://i.imgur.com/8VuWSCh.jpg";
 const orbioslogo = "http://i68.tinypic.com/2n9wa6a.png";
 const bluehex = "#00ccff";
@@ -54,15 +54,17 @@ const greenhex = "#A3F37A";
 const pinkhex = "#ffb6c1";
 const orangehex = "#f49e42";
 const GenericErrorMessage = "Something seems to have gone wrong... Sorry, try again?!";
-var uploaded = false;
-var voice_connection;
-var d = new Date();
-var Month = d.getMonth();
+let uploaded = false;
+let voice_connection;
+let d = new Date();
+let Month = d.getMonth();
 // --Global declarations-- //
 
 bot.on('ready', () => {
 	console.log("Bot login successfull");
 	bot.user.setGame(";cmds");
+	//bot.user.setUsername("Orb");
+	//bot.user.setAvatar(botpic);
 });
 
 bot.on('presenceUpdate', async(oldMember, newMember) => {
@@ -126,6 +128,7 @@ bot.on('message', async(message) => {
 		const channel = await message.channel;
 		const member = await message.guild.fetchMember(message.author);
 
+
 		// Module Imports (no userinput) //
 		require("./modules/social.js").social(message, orbios_id, debugServer_id, owner_id, self, prefix, fs);
 		require("./modules/logger.js").logger(bot, message);
@@ -151,7 +154,7 @@ bot.on('message', async(message) => {
 		}
 
 		// Module Imports //
-		require("./modules/orb.js").orb(Discord, message, userinput, orangehex, orbios_id, debugServer_id, orbioslogo, GenericErrorMessage);
+		require("./modules/orb.js").orb(Discord, bot, message, userinput, orangehex, orbios_id, debugServer_id, orbioslogo, GenericErrorMessage, fs);
 		require("./modules/moderation.js").moderation(bot, message, userinput, selfid);
 		require("./modules/osu.js").osu(Discord, message, userinput, self, pinkhex, GenericErrorMessage, getJSON);
 		require("./modules/google.js").google(Discord, message, userinput, greenhex, GenericErrorMessage);
@@ -378,6 +381,37 @@ bot.on('message', async(message) => {
 		console.error(e);
 	}
 }); // End of bot.on('message')
+
+//Periodically (every 60s) checks some things
+setTimeout(function() {
+	let jsonFile = "./JSON/invites.json";
+
+	fs.readFile(jsonFile, function(err, data) {
+		data = JSON.parse(data);
+
+		for (const user of Object.keys(data)) {
+			if (data[user].code) {
+				bot.fetchInvite(data[user].code).then(function(invite, err) {
+					if (invite.uses >= 5) {
+						let guild = bot.guilds.get(orbios_id);
+						let member = bot.guilds.get(orbios_id).fetchMember(data[user]);
+
+						if (!member.roles.exists("name", "Recruiter")) {
+							member.addRole(guild.roles.find("name", "Recruiter"));
+						}
+					}
+				}).catch(function(err) {
+					delete data[user];
+
+					fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
+						if (err) return console.log(err);
+					})
+				});
+			}
+		}
+	})
+}, 60000)
+
 
 function sleep(time) {
 	return new Promise((resolve) => setTimeout(resolve, time));
