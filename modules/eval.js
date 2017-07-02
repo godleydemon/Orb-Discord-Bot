@@ -1,6 +1,6 @@
 require("../bot.js");
 
-module.exports.eval = async(Discord, bot, message, userinput, bluehex, owner_id, GenericErrorMessage) => {
+module.exports.eval = async(Discord, bot, message, userinput, orangehex, owner_id, GenericErrorMessage) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
@@ -19,7 +19,7 @@ module.exports.eval = async(Discord, bot, message, userinput, bluehex, owner_id,
 			try {
 				if (res != "undefined" && res != "null" && res != "") {
 					let embed = new Discord.RichEmbed()
-						.setColor(bluehex)
+						.setColor(orangehex)
 						.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
 						.setThumbnail(thumbnail)
 						.setDescription('**Eval Result:** :white_check_mark:\n\n**Input:**\n```\n' + code + '\n```\n**Output:**\n```js\n' + res + '\n```');
@@ -32,7 +32,7 @@ module.exports.eval = async(Discord, bot, message, userinput, bluehex, owner_id,
 						});
 				} else {
 					let embed = new Discord.RichEmbed()
-						.setColor(bluehex)
+						.setColor(orangehex)
 						.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
 						.setThumbnail(thumbnail)
 						.setDescription('**Eval Result:** :x:\n\n**Input:**\n```\n' + code + '\n```\n**Error:**\n```js\n' + res + '\n```');
@@ -49,7 +49,7 @@ module.exports.eval = async(Discord, bot, message, userinput, bluehex, owner_id,
 				console.log(e.message);
 
 				let embed = new Discord.RichEmbed()
-					.setColor(bluehex)
+					.setColor(orangehex)
 					.setAuthor("Code Evaluation", "https://d30y9cdsu7xlg0.cloudfront.net/png/13694-200.png")
 					.setThumbnail(thumbnail)
 					.setDescription('**Eval Result:** :x:\n\n**Input:**\n```\n' + code + '\n```\n**Error:**\n```' + e.name + '\n' + e.message + '```');

@@ -43,7 +43,6 @@ module.exports.orb = async(Discord, bot, message, userinput, orangehex, orbios_i
 								}).then(function(invite, err) {
 
 									data[author.id].url = invite.url;
-									data[author.id].uses = invite.uses;
 									data[author.id].code = invite.code;
 									embed = new Discord.RichEmbed()
 										.setColor(orangehex)
@@ -64,7 +63,6 @@ module.exports.orb = async(Discord, bot, message, userinput, orangehex, orbios_i
 
 								data[author.id] = {
 									url: invite.url,
-									uses: invite.uses,
 									code: invite.code
 								};
 								embed = new Discord.RichEmbed()

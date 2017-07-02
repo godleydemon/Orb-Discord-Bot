@@ -5,7 +5,7 @@
     },
     "orb invite": {
         "name": "orb invite",
-        "description": "Gives a permanent invite link to Orbios, #rules_and_info"
+        "description": "Gives you a personal invite link (lasts 1 day)"
     },
     "orb roles": {
         "name": "orb roles",
@@ -15,10 +15,6 @@
         "name": "orb sr",
         "description": "Assigns a role if it is from the list"
     },
-    "orb custom": {
-        "name": "orb custom",
-        "description": "Sets a custom message for whatever follows it (gn, gm)"
-    },
     "orb tournament": {
         "name": "orb tournament",
         "description": "Gives a permanent invite link to the Orbios tournament server"
@@ -27,9 +23,9 @@
         "name": "orb puzzle",
         "description": "Gives a link to the puzzle section of the website"
     },
-    "orb rprog": {
-        "name": "orb rprog",
-        "description": "Displays the progress towards obtaining the 'Recruiter' role"
+    "custom": {
+        "name": "custom",
+        "description": "Sets a custom message for whatever follows it (gn, gm)"
     },
     "join": {
         "name": "join",
@@ -53,7 +49,7 @@
     },
     "osu u": {
         "name": "osu u",
-        "description": "Displays details on the specified osu! user... cookiezi-sama :blue_heart:"
+        "description": "Displays details on the specified osu! user... cookiezi-sama :large_orange_diamond:"
     },
     "anime": {
         "name": "anime",

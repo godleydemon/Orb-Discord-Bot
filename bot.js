@@ -47,7 +47,6 @@ const debugServer_id = "324854543344992277";
 const botpic = "E:/Stuff/Wallpapers & Themes/Pictures/orb_anime.png";
 const botpiconline = "http://i.imgur.com/e40tE2Y.png";
 const orbioslogo = "http://i68.tinypic.com/2n9wa6a.png";
-const bluehex = "#00ccff";
 const purplehex = "#8042f4";
 const redhex = "#FF044A";
 const greenhex = "#A3F37A";
@@ -129,7 +128,7 @@ bot.on('message', async(message) => {
 
 		// Module Imports (no userinput) //
 		require("./modules/social.js").social(message, orbios_id, debugServer_id, owner_id, self, prefix, fs);
-		require("./modules/logger.js").logger(bot, message);
+		require("./modules/logger.js").logger(bot, message, orbios_id, selfid);
 		// --Module Imports (no userinput)-- //
 
 		//If the message starts with a mention or the prefix assume it's a command and check to see if it is...
@@ -163,7 +162,7 @@ bot.on('message', async(message) => {
 		require("./modules/wallpaper.js").wallpaper(message, userinput);
 		require("./modules/custom.js").custom(message, userinput, owner_id, fs);
 		require("./modules/info.js").info(message, userinput);
-		require("./modules/eval.js").eval(Discord, bot, message, userinput, bluehex, owner_id, GenericErrorMessage);
+		require("./modules/eval.js").eval(Discord, bot, message, userinput, orangehex, owner_id, GenericErrorMessage);
 		// --Module Imports-- //
 
 		//Displays all commands that are currently available, along with what they do.
@@ -178,10 +177,10 @@ bot.on('message', async(message) => {
 				}
 
 				embed = new Discord.RichEmbed()
-					.setAuthor("Remember: Use me, don't abuse me! :P", botpiconline)
+					.setTitle("Remember: Use me, don't abuse me! :P")
 					.setThumbnail(botpiconline)
 					.setDescription(cmdsList)
-					.setColor(bluehex);
+					.setColor(orangehex);
 			} else {
 				for (let cmd in commands) {
 					if (!commands[cmd].name.startsWith('orb')) {
@@ -190,10 +189,10 @@ bot.on('message', async(message) => {
 				}
 
 				embed = new Discord.RichEmbed()
-					.setAuthor("Remember: Use me, don't abuse me! :P", botpiconline)
+					.setTitle("Remember: Use me, don't abuse me! :P")
 					.setThumbnail(botpiconline)
 					.setDescription(cmdsList)
-					.setColor(bluehex);
+					.setColor(orangehex);
 			}
 
 			author.send({
@@ -209,7 +208,7 @@ bot.on('message', async(message) => {
 		if (userinput === 'join') {
 			let embed = new Discord.RichEmbed()
 				.setTitle("Invite to server")
-				.setColor(bluehex)
+				.setColor(orangehex)
 				.setThumbnail(botpiconline)
 				.setDescription("I'll join, but only if I get my own role :P")
 				.setURL("https://discordapp.com/oauth2/authorize?permissions=8&scope=bot&client_id=250943511648534528");
@@ -228,7 +227,7 @@ bot.on('message', async(message) => {
 			let embed = new Discord.RichEmbed()
 				.setTitle("Meet my creator")
 				.setThumbnail(botpiconline)
-				.setColor(bluehex)
+				.setColor(orangehex)
 				.setURL("https://discordapp.com/invite/0abEJoLeXf9kswil")
 				.setDescription("by clicking the link (Do it, you wont!)");
 
@@ -245,7 +244,7 @@ bot.on('message', async(message) => {
 		if (userinput === 'server') {
 			let embed = new Discord.RichEmbed()
 				.setTitle("Join my server")
-				.setColor(bluehex)
+				.setColor(orangehex)
 				.setURL("https://discord.gg/2ffbTEQ")
 				.setDescription("by clicking the link (Do it, you wont!)");
 
@@ -261,7 +260,7 @@ bot.on('message', async(message) => {
 		//Sends a link that allows users to see their public IP address.
 		if (userinput === 'myip') {
 			let embed = new Discord.RichEmbed()
-				.setColor(bluehex)
+				.setColor(orangehex)
 				.setTitle("Get your IP")
 				.setURL("http://icanhazip.com/");
 
@@ -359,7 +358,7 @@ bot.on('message', async(message) => {
 							channel.send("The talking functionality appears to currently be out-of-order. This may take a while to fix.");
 						} else {
 							let embed = new Discord.RichEmbed()
-								.setColor(bluehex)
+								.setColor(orangehex)
 								.setAuthor("Cleverbot", "http://a2.mzstatic.com/us/r30/Purple3/v4/71/6a/74/716a747d-152f-ab09-2e72-5622fd369655/icon175x175.png")
 								.setTitle(author.username)
 								.setDescription(response.message);
@@ -381,7 +380,7 @@ bot.on('message', async(message) => {
 }); // End of bot.on('message')
 
 //Periodically (every 60s) checks some things
-setTimeout(function() {
+let checks = async() => {
 	let jsonFile = "./JSON/invites.json";
 
 	fs.readFile(jsonFile, function(err, data) {
@@ -389,26 +388,35 @@ setTimeout(function() {
 
 		for (const user of Object.keys(data)) {
 			if (data[user].code) {
-				bot.fetchInvite(data[user].code).then(function(invite, err) {
-					if (invite.uses >= 5) {
-						let guild = bot.guilds.get(orbios_id);
-						let member = bot.guilds.get(orbios_id).fetchMember(data[user]);
+				let inviteExists;
 
-						if (!member.roles.exists("name", "Recruiter")) {
-							member.addRole(guild.roles.find("name", "Recruiter"));
+				bot.guilds.get(orbios_id).fetchInvites().then(function(invite) {
+					inviteExists = false;
+					invite.forEach(function(invite) {
+						if (invite.code === data[user].code) {
+							inviteExists = true;
+							if (invite.uses >= 5) {
+								bot.guilds.get(orbios_id).fetchMember(user).then(user => {
+									user.addRole(bot.guilds.get(orbios_id).roles.find("name", "Recruiter")).catch(function(err) {});
+								})
+							}
 						}
-					}
-				}).catch(function(err) {
-					delete data[user];
-
-					fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
-						if (err) return console.log(err);
 					})
+
+					if (inviteExists === false) {
+						delete data[user];
+
+						fs.writeFile(jsonFile, JSON.stringify(data), function(err) {
+							if (err) return console.log(err);
+						})
+					}
 				});
 			}
 		}
 	})
-}, 60000)
+	setTimeout(checks, 60000);
+}
+setTimeout(checks, 10000);
 
 
 function sleep(time) {
@@ -426,7 +434,7 @@ function isNumeric(n) {
 }
 
 //Logs into the bot account
-bot.login(config.bot_debug_token).catch(e => console.error(e));
+bot.login('MjUwOTQzNTExNjQ4NTM0NTI4.DCvATw.Co87zqfLN51B2DWl8nuugElepDQ').catch(e => console.error(e));
 
 bot.on('error', (e) => {
 	console.error(e);
