@@ -47,6 +47,10 @@
         "name": "myip",
         "description": "Gives a link to a ip retrieving website (absolutely not an IP grabber)"
     },
+    "roll": {
+        "name": "roll",
+        "description": "Rolls a number from 1 to 100 (or whatever number is specified) to win bragging rights"
+    },
     "osu u": {
         "name": "osu u",
         "description": "Displays details on the specified osu! user... cookiezi-sama :large_orange_diamond:"

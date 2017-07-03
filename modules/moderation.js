@@ -1,7 +1,7 @@
 require('../bot.js');
 
 
-module.exports.moderation = async(bot, message, userinput, selfid) => {
+module.exports.moderation = async(bot, message, userinput, selfid, orbios_id, debugServer_id) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
@@ -61,53 +61,54 @@ module.exports.moderation = async(bot, message, userinput, selfid) => {
 
 		//Orbios warning command
 		if (userinput.startsWith("warn ")) {
-			if (message.guild != null && message.guild.id != orbios_id) return;
-			if (!member.roles.exists("name", "Staff")) return;
+			if (message.guild.id === orbios_id || message.guild.id === debugServer_id) {
+				if (member.roles.exists("name", "Staff")) {
 
-			let lastmsg = message;
-			let msgArray = userinput.split(" ");
-			if (message.mentions.users.first()
-				.id === selfid) {
-				var victim = await message.guild.fetchMember(message.mentions.users.first());
-			} else {
-				var victim = await message.guild.fetchMember(message.mentions.users.last());
+					let lastmsg = message;
+					let msgArray = userinput.split(" ");
+
+					if (message.mentions.users.first()
+						.id === selfid) {
+						var victim = await message.guild.fetchMember(message.mentions.users.first());
+					} else {
+						var victim = await message.guild.fetchMember(message.mentions.users.last());
+					}
+
+					if (!victim) return channel.send(author + " Not a valid user...");
+					lastmsg.delete();
+					if (msgArray[2] === "abuse") {
+						victim.send("This is a warning, you have been warned for abusing another member of Orbios. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "racism") {
+						victim.send("This is a warning, you have been warned for being racist towards another member of Orbios in a malicious way. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "exploit") {
+						victim.send("This is a warning, you have been warned for exploiting something you shouldn't have. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "alt") {
+						victim.send("This is a warning, you have been warned for having more than one account on Orbios. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "nsfw") {
+						victim.send("This is a warning, you have been warned for posting NSFW material outside of the appropriate channel. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "notnsfw") {
+						victim.send("This is a warning, you have been warned for posting a disturbing/non-pornographic image/gif/video/etc in the NSFW channel. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "falsereport") {
+						victim.send("This is a warning, you have been warned for falsely reporting someone breaking rule(s). Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "developer") {
+						victim.send("This is a warning, you have been warned for asking a Developer for help with something a Moderator can help you with. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "chain") {
+						victim.send("This is a warning, you have been warned for contacting someone higher than a Moderator. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "spam") {
+						victim.send("This is a warning, you have been warned for spamming in a channel on Orbios. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "conversation") {
+						victim.send("This is a warning, you have been warned for having a conversation with a bot outside of the appropriate channel. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "advertising") {
+						victim.send("This is a warning, you have been warned for advertising on Orbios. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else if (msgArray[2] === "notidea") {
+						victim.send("This is a warning, you have been warned for posting something in the #ideas channel that is not an idea. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
+					} else {
+						return channel.send(author + " Not a valid warning...");
+					}
+					author.send('**' + victim.user.username + "** has been successfully warned.");
+
+				}
 			}
-
-			if (!victim) return channel.send(author + " Not a valid user...");
-			lastmsg.delete();
-			if (msgArray[2] === "abuse") {
-				victim.send("This is a warning, you have been warned for abusing another member of Orbios. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "racism") {
-				victim.send("This is a warning, you have been warned for being racist towards another member of Orbios in a malicious way. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "exploit") {
-				victim.send("This is a warning, you have been warned for exploiting something you shouldn't have. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "alt") {
-				victim.send("This is a warning, you have been warned for having more than one account on Orbios. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "nsfw") {
-				victim.send("This is a warning, you have been warned for posting NSFW material outside of the appropriate channel. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "notnsfw") {
-				victim.send("This is a warning, you have been warned for posting a disturbing/non-pornographic image/gif/video/etc in the NSFW channel. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "falsereport") {
-				victim.send("This is a warning, you have been warned for falsely reporting someone breaking rule(s). Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "developer") {
-				victim.send("This is a warning, you have been warned for asking a Developer for help with something a Moderator can help you with. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "chain") {
-				victim.send("This is a warning, you have been warned for contacting someone higher than a Moderator. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "spam") {
-				victim.send("This is a warning, you have been warned for spamming in a channel on Orbios. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "conversation") {
-				victim.send("This is a warning, you have been warned for having a conversation with a bot outside of the appropriate channel. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "advertising") {
-				victim.send("This is a warning, you have been warned for advertising on Orbios. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "wronghelp") {
-				victim.send("This is a warning, you have been warned for giving the wrong type of help in the #get_help channel. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else if (msgArray[2] === "notidea") {
-				victim.send("This is a warning, you have been warned for posting something in the #ideas channel that is not an idea. Please refrain from doing so in the future, as it may lead to a mute/longer mute/de-role/ban. If you think you have been wrongly accused, please contact a Moderator via DM.");
-			} else {
-				return channel.send(author + " Not a valid warning...");
-			}
-			author.send('**' + victim.user.username + "** has been successfully warned.");
-
 		}
 	} catch (e) {
 		console.error(e);

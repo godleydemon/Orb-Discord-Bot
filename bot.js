@@ -159,7 +159,7 @@ bot.on('message', async(message) => {
 
 		// Module Imports //
 		require("./modules/orb.js").orb(Discord, bot, message, userinput, orangehex, orbios_id, debugServer_id, orbioslogo, GenericErrorMessage, fs);
-		require("./modules/moderation.js").moderation(bot, message, userinput, selfid);
+		require("./modules/moderation.js").moderation(bot, message, userinput, selfid, orbios_id, debugServer_id);
 		require("./modules/osu.js").osu(Discord, message, userinput, self, pinkhex, GenericErrorMessage, getJSON);
 		require("./modules/google.js").google(Discord, message, userinput, greenhex, GenericErrorMessage);
 		require("./modules/youtube.js").youtube(Discord, message, userinput, redhex, GenericErrorMessage);
