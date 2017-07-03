@@ -64,6 +64,13 @@ bot.on('ready', () => {
 	bot.user.setGame(";cmds");
 });
 
+bot.on('guildMemberAdd', (member) => {
+	let greetMsg = ['Welcome newbie :large_orange_diamond:', 'Hey there! Hope you enjoy your time on Orbios!', 'What are you trying to pull?! Joining without saying anything?!', 'You took long enough to join... :cry:', 'I hope you say hello at least.', 'You better watch out there buddy, you may just have a good time! :open_mouth:'];
+	let rnd = Math.floor(Math.random() * greetMsg.length);
+
+	bot.guilds.get(orbios_id).channels.get('205311358961451020').send(member + " " + greetMsg[rnd]);
+});
+
 bot.on('presenceUpdate', async(oldMember, newMember) => {
 	try {
 		if (!newMember.user.presence.game) return;
