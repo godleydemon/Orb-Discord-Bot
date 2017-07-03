@@ -22,6 +22,7 @@ module.exports.social = async(message, orbios_id, debugServer_id, owner_id, self
 						content.toLowerCase() === "❤ orb" ||
 						content.toLowerCase() === "orb ❤" ||
 						content.toLowerCase() === "i love you orb" ||
+						content.toLowerCase() === "i love orb" ||
 						content.toLowerCase() === "<3 orb" ||
 						content.toLowerCase() === "orb <3") {
 						channel.send(":large_orange_diamond:");
