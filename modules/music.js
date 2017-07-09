@@ -14,7 +14,7 @@ module.exports.music = async(bot, message, userinput, self, fs, orangehex, Gener
 		try {
 			const author = await message.author;
 			const content = await message.content;
-			const channel = await message.channel;
+			const channel = await channel;
 			const member = await message.guild.fetchMember(message.author);
 
 			/*
@@ -54,9 +54,9 @@ module.exports.music = async(bot, message, userinput, self, fs, orangehex, Gener
 ///Stunts shit
 if (userinput.startsWith('play ')) {
 		const voiceChannel = message.member.voiceChannel;
-		if (message.member.voiceChannel === undefined) return message.channel.send(wrap('You\'re not in a voice channel.'));
+		if (message.member.voiceChannel === undefined) return channel.send(wrap('You\'re not in a voice channel.'));
 		var SUFFIX = message.content.replace('music request ', '');
-		message.channel.send(wrap('Searching...'))
+		channel.send(wrap('Searching...'))
 			.then(playlistmsg => {
 
 				SEARCHSTRING = 'ytsearch1:' + SUFFIX;
@@ -112,7 +112,7 @@ if (userinput.startsWith('play ')) {
 			if (voiceConnection.playing) {
 				console.log("currently playing something")
 			} else {
-				message.channel.send(wrap("Beginning playlist..."))
+				channel.send(wrap("Beginning playlist..."))
 					.then(playing => {
 						if (!is_queue_empty()) {
 							play_list_download()
@@ -245,7 +245,7 @@ if (userinput.startsWith('play ')) {
 		return getEncoding(info) === encoding;
 	}
 //	if (userinput.startsWith('play')) {
-//		message.channel.send(wrap("Beginning playlist..."))
+//		channel.send(wrap("Beginning playlist..."))
 //			.then(playing => {
 //				if (!is_queue_empty()) {
 //					play_list_download()
@@ -278,7 +278,7 @@ if (userinput.startsWith('play ')) {
 		if (dispatcher2 !== null) {
 			dispatcher2.end();
 		} else {
-			message.channel.send(wrap("No playlist to work with!"))
+			channel.send(wrap("No playlist to work with!"))
 		}
 	}
 ///end of stunts shit
