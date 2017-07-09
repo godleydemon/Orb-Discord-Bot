@@ -459,6 +459,7 @@ bot.login(config.bot_debug_token).catch(e => console.error(e)).then(() => {
 			}
 			// playlist doesn't exist, let's make this bitch
 			var data = {}
+			data = []
 			data.push()
 			fs.writeFile('./music/playlist.json', JSON.stringify(data), function(err) {
 				if (err) throw err;
