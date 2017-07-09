@@ -348,9 +348,9 @@ bot.on('message', async(message) => {
 			let amount = parseInt(amountString) + 1;
 
 			if (member.roles.exists("name", "Staff") && isNumeric(amountString) && amountString.startsWith(' ')) {
-				message.channel.bulkDelete(amount);
+				channel.bulkDelete(amount);
 			} else if (!amountString) {
-				message.channel.bulkDelete(2);
+				channel.bulkDelete(2);
 			}
 
 			return;
@@ -359,7 +359,7 @@ bot.on('message', async(message) => {
 		//This will only get run if NO other command was executed.
 		//Sends the user's message to cleverbot's api and sends a message containing cleverbot's response.
 		if (cbaccess === true) {
-			if (message.channel.type === "dm" || message.channel.type === "text") {
+			if (channel.type === "dm" || channel.type === "text") {
 				Cleverbot.prepare(function() {
 					cb.write(message.cleanContent.replace("@orb ", ""), function(response) {
 						if (response.message === "<html>" || response.status === '401') {
