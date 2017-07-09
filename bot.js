@@ -456,14 +456,8 @@ bot.login(config.bot_debug_token).catch(e => console.error(e)).then(() => {
     } else if(err.code == 'ENOENT') {
         // playlist doesn't exist, let's make this bitch
 				var data = {}
-				data.table = []
-				for (i=0; i <26 ; i++){
-   				var obj = {
-       			id: i,
-       			square: i * i
-   				}
-   			data.table.push(obj)
-				}
+				data = []
+   			data.push()
         fs.writeFile('./music/playlist.json', JSON.stringify(data), function(err) {
 					if (err) throw err;
 						console.log('completely written');
