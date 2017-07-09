@@ -78,10 +78,6 @@ module.exports.music = async(bot, message, userinput, self, fs, orangehex, Gener
 			return queue.length === 0;
 		}
 
-		function sleep(time) {
-			return new Promise((resolve) => setTimeout(resolve, time));
-		}
-
 		function play_list_msg() {
 			let q = queue[0];
 
@@ -160,6 +156,33 @@ module.exports.music = async(bot, message, userinput, self, fs, orangehex, Gener
 			return '```\n' + text.replace(/`/g, '`' + String.fromCharCode(8203)) + '\n```';
 		}
 
+		function tick() {
+			for (let i = 0; i < servers.length; i++) {
+				for (let j = 0; j < servers[i].twitchChannels.length; j++) {
+					for (let k = -1; k < servers[i].discordChannels.length; k++) {
+						if (servers[i].twitchChannels[j]) {
+							callApi(servers[i], servers[i].twitchChannels[j], apiCallback, true);
+						}
+					}
+				}
+			}
+		}
+
+		// Downloads the playlist
+		function play_list_download() {
+			MUSICPLAY = YoutubeDL(queue[0].url, ['--no-warnings']);
+			let song = fs.createWriteStream("./music/" + queue[0].id + ".flv")
+			MUSICPLAY.pipe(song)
+			song.on('finish', function() {
+				play_list_play()
+				TODELETE = queue[0].id
+			});
+		}
+
+		function wrap(text) {
+			return '```\n' + text.replace(/`/g, '`' + String.fromCharCode(8203)) + '\n```';
+		}
+
 		function sleep(time) {
 			return new Promise((resolve) => setTimeout(resolve, time));
 		}
@@ -171,93 +194,61 @@ module.exports.music = async(bot, message, userinput, self, fs, orangehex, Gener
 						if (servers[i].twitchChannels[j]) {
 							callApi(servers[i], servers[i].twitchChannels[j], apiCallback, true);
 						}
-					});
-			});
-	} else {
-		channel.send(wrap("You've reached the end of the playlist!"));
-	}
-}
-
-// Downloads the playlist
-function play_list_download() {
-	MUSICPLAY = YoutubeDL(queue[0].url, ['--no-warnings']);
-	let song = fs.createWriteStream("./music/" + queue[0].id + ".flv")
-	MUSICPLAY.pipe(song)
-	song.on('finish', function() {
-		play_list_play()
-		TODELETE = queue[0].id
-	});
-}
-
-function wrap(text) {
-	return '```\n' + text.replace(/`/g, '`' + String.fromCharCode(8203)) + '\n```';
-}
-
-function sleep(time) {
-	return new Promise((resolve) => setTimeout(resolve, time));
-}
-
-function tick() {
-	for (let i = 0; i < servers.length; i++) {
-		for (let j = 0; j < servers[i].twitchChannels.length; j++) {
-			for (let k = -1; k < servers[i].discordChannels.length; k++) {
-				if (servers[i].twitchChannels[j]) {
-					callApi(servers[i], servers[i].twitchChannels[j], apiCallback, true);
+					}
 				}
 			}
 		}
-	}
 
-	function getFormatId(info) {
-		return info.itag || info.format_id;
-	}
-
-	function isContainer(info, container) {
-		return getContainer(info) === container;
-	}
-
-	function getContainer(info) {
-		return info.ext || info.container;
-	}
-
-	function getEncoding(info) {
-		return info.encoding || info.audioEncoding || info.acodec;
-	}
-
-	function isEncodedAs(info, encoding) {
-		return getEncoding(info) === encoding;
-	}
-
-	if (message.content.toLowerCase().includes("what's playing") || message.content.toLowerCase().includes("whats playing")) {
-		play_list_msg()
-	}
-
-	if (userinput.startsWith('skip')) {
-		const voiceConnection = bot.voiceConnections.find(val => val.channel.guild.id == message.guild.id);
-		dispatcher2 = voiceConnection.player.dispatcher;
-		if (dispatcher2 !== null) {
-			dispatcher2.end();
-		} else {
-			channel.send(wrap("No playlist to work with!"))
+		function getFormatId(info) {
+			return info.itag || info.format_id;
 		}
-	}
-	///end of stunts shit
 
-
-	//Stops music
-	if (userinput === 'stop') {
-		if (author.id != owner_id) return channel.send(":broken_heart: This command is only for my master.");
-
-		if (voice_connection) {
-			voice_connection.disconnect();
-			channel.send("```ini\n[ Music stopped ]\n```");
-		} else {
-			channel.send("```ini\n[ No music is playing ]\n```");
+		function isContainer(info, container) {
+			return getContainer(info) === container;
 		}
-	}
-} catch (e) {
-	console.error(e);
-}
 
-return;
+		function getContainer(info) {
+			return info.ext || info.container;
+		}
+
+		function getEncoding(info) {
+			return info.encoding || info.audioEncoding || info.acodec;
+		}
+
+		function isEncodedAs(info, encoding) {
+			return getEncoding(info) === encoding;
+		}
+
+		if (message.content.toLowerCase().includes("what's playing") || message.content.toLowerCase().includes("whats playing")) {
+			play_list_msg()
+		}
+
+		if (userinput.startsWith('skip')) {
+			const voiceConnection = bot.voiceConnections.find(val => val.channel.guild.id == message.guild.id);
+			dispatcher2 = voiceConnection.player.dispatcher;
+			if (dispatcher2 !== null) {
+				dispatcher2.end();
+			} else {
+				channel.send(wrap("No playlist to work with!"))
+			}
+		}
+		//end of stunts shit
+
+
+		//Stops music
+		if (userinput === 'stop') {
+			if (author.id != owner_id) return channel.send(":broken_heart: This command is only for my master.");
+
+			if (voice_connection) {
+				voice_connection.disconnect();
+				channel.send("```ini\n[ Music stopped ]\n```");
+			} else {
+				channel.send("```ini\n[ No music is playing ]\n```");
+			}
+		}
+	} catch (e) {
+		console.error(e);
+	}
+
+	return;
 };

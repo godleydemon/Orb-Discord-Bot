@@ -12,7 +12,7 @@ call npm install isgd
 call npm install anime-scraper
 call npm install google-search-scraper
 call npm install youtube-dl
-call npm install youtube-node
+call npm install ytdl-core
 call npm install twitch-api
 call npm install random-anime-wallpapers
 call npm install express

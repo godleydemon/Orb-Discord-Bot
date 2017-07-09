@@ -13,7 +13,13 @@ module.exports.info = async(message, userinput) => {
 			let subject = userinput.replace('info ', '').toLowerCase();
 
 			if (subject === 'recruit' || subject === 'recruiting' || subject === 'recruitment') {
-				channel.send('**To recruit, you simply need to:** \n\n**1.** Create a permanent invite link. \n**2.** Copy the little code after the last **/** of the invite link. \n**3.** Send the link to a bunch of people. \n**4.** Check your recruitment progress by typing **;rprog ** followed by the little code... Ex: **;rprog abcdefg12** \n\nOnce you have recruited 5 people, type the command again, and you will have the **Recruiter** role!');
+				channel.send("**To recruit simply:**\n" +
+					+"**1.** Type `;orb invite`\n" +
+					"**2.** Copy the invite link\n" +
+					"**3.** Get 5 people to join within 24 hours\n" +
+					"**4.** ????\n" +
+					"**5.** Profit"
+				)
 			}
 		}
 	} catch (e) {
