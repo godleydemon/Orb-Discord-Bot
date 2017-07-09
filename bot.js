@@ -171,7 +171,7 @@ bot.on('message', async(message) => {
 		require("./modules/anime.js").anime(Discord, message, userinput, GenericErrorMessage);
 		require("./modules/wallpaper.js").wallpaper(message, userinput);
 		require("./modules/custom.js").custom(message, userinput, owner_id, fs);
-		require("./modules/info.js").info(message, userinput);
+		require("./modules/info.js").info(message, userinput, orbios_id, debugServer_id);
 		require("./modules/eval.js").eval(Discord, bot, message, userinput, orangehex, owner_id, GenericErrorMessage);
 		// --Module Imports-- //
 

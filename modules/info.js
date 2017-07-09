@@ -1,8 +1,10 @@
 require('../bot.js');
 
 
-module.exports.info = async(message, userinput) => {
+module.exports.info = async(message, userinput, orbios_id, debugServer_id) => {
 	try {
+		if (message.guild.id != orbios_id && message.guild.id != debugServer_id) return;
+
 		const author = await message.author;
 		const content = await message.content;
 		const channel = await message.channel;
