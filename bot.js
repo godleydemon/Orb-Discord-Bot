@@ -468,9 +468,6 @@ bot.login(config.bot_debug_token).catch(e => console.error(e)).then(() => {
 					if (err) throw err;
 						console.log('completely written');
 				});
-				var file = fs.readFileSync(channelPath, {
-					encoding: "utf-8"
-				});
 				var queuefile = fs.readFileSync(queuepath, {
 					encoding: "utf-8"
 				});
