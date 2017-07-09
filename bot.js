@@ -165,7 +165,7 @@ bot.on('message', async(message) => {
 		require("./modules/google.js").google(Discord, message, userinput, greenhex, GenericErrorMessage);
 		require("./modules/youtube.js").youtube(Discord, message, userinput, redhex, GenericErrorMessage);
 		require("./modules/twitch.js").twitch(Discord, message, userinput, purplehex, GenericErrorMessage);
-		require("./modules/music.js").music(bot, message, userinput, self);
+		require("./modules/music.js").music(bot, message, userinput, self, fs, orangehex, GenericErrorMessage);
 		require("./modules/anime.js").anime(Discord, message, userinput, GenericErrorMessage);
 		require("./modules/wallpaper.js").wallpaper(message, userinput);
 		require("./modules/custom.js").custom(message, userinput, owner_id, fs);
@@ -443,36 +443,36 @@ function isNumeric(n) {
 
 //Logs into the bot account
 bot.login(config.bot_debug_token).catch(e => console.error(e)).then(() => {
-	//Let's get this playlist thing fucking done
-	console.log("Loading a fucking playlist " + queuepath);
+	//Let's get this playlist thing done
+	console.log("Loading a playlist " + queuepath);
 	fs.stat(queuepath, function(err, stat) {
-    if(err == null) {
+		if (err == null) {
 			//playlist exists
-        console.log('playlist.json fucking exists');
-				var queuefile = fs.readFileSync(queuepath, {
-					encoding: "utf-8"
-				});
-				queue = JSON.parse(queuefile);
-    } else if(err) {
-			if (!fs.existsSync('music')){
-    		fs.mkdirSync('music');
+			console.log('playlist.json exists');
+			var queuefile = fs.readFileSync(queuepath, {
+				encoding: "utf-8"
+			});
+			queue = JSON.parse(queuefile);
+		} else if (err) {
+			if (!fs.existsSync('music')) {
+				fs.mkdirSync('music');
 			}
-        // playlist doesn't exist, let's make this bitch
-				var data = {}
-				data = []
-   			data.push()
-        fs.writeFile('./music/playlist.json', JSON.stringify(data), function(err) {
-					if (err) throw err;
-						console.log('completely written');
-				});
-				var queuefile = fs.readFileSync(queuepath, {
-					encoding: "utf-8"
-				});
-				queue = JSON.parse(queuefile);
-    } else {
+			// playlist doesn't exist, let's make this bitch
+			var data = {}
+			data = []
+			data.push()
+			fs.writeFile('./music/playlist.json', JSON.stringify(data), function(err) {
+				if (err) throw err;
+				console.log('completely written');
+			});
+			var queuefile = fs.readFileSync(queuepath, {
+				encoding: "utf-8"
+			});
+			queue = JSON.parse(queuefile);
+		} else {
 			//if I get here, something catastrophically amazing happened and I became a meme
-        console.log('uh oh.. shit| ', err.code);
-    }
+			console.log('uh oh.. shit| ', err.code);
+		}
 	});
 });
 
