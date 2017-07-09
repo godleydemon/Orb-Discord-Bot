@@ -453,7 +453,7 @@ bot.login(config.bot_debug_token).catch(e => console.error(e)).then(() => {
 					encoding: "utf-8"
 				});
 				queue = JSON.parse(queuefile);
-    } else if(err.code == 'ENOENT') {
+    } else if(err) {
 			if (!fs.existsSync('music')){
     		fs.mkdirSync('music');
 			}
