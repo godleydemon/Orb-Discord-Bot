@@ -1,37 +1,22 @@
 require('../bot.js');
-const youtubedl = require('youtube-dl');
-const YouTube = require("youtube-node");
-const youTube = new YouTube();
 const YoutubeDL = require('youtube-dl');
 const ytdl = require('ytdl-core');
-const config = require("../JSON/config.json");
-const fs = require('fs');
-const pinkhex = "#E49AA9";
-const pinkinteger = 0xE49AA9;
-const purplehex = "#8042f4";
-const purpleinteger = 0x8042f4;
-const redhex = "#FF044A";
-const redinteger = 0xFF044A;
 const queuepath = "./music/playlist.json";
-var VOLUME = 10
+let VOLUME = 10
 
-youTube.setKey(config.youtube_key);
-
-module.exports.music = async(bot, message, userinput, self) => {
+module.exports.music = async(bot, message, userinput, self, fs, orangehex, GenericErrorMessage) => {
 	try {
 		const author = await message.author;
 		const content = await message.content;
 		const channel = await message.channel;
 		const member = await message.guild.fetchMember(message.author);
 
-		//Downloads and plays videos from youtube.
-
 		//Stunts shit
 		if (userinput.startsWith('play ')) {
 			const voiceChannel = message.member.voiceChannel;
-			if (message.member.voiceChannel === undefined) return message.channel.send(wrap('You\'re not in a voice channel.'));
+			if (message.member.voiceChannel === undefined) return channel.send(wrap('You\'re not in a voice channel.'));
 			var SUFFIX = message.content.replace('music request ', '');
-			message.channel.send(wrap('Searching...'))
+			channel.send(wrap('Searching...'))
 				.then(playlistmsg => {
 
 					SEARCHSTRING = 'ytsearch1:' + SUFFIX;
@@ -73,10 +58,12 @@ module.exports.music = async(bot, message, userinput, self) => {
 						playlistmsg.edit(wrap('added \"' + TITLE + '\" to queue by: ' + message.author.username))
 					});
 				});
+
 			voiceChannel.join()
 			const voiceConnection = bot.voiceConnections.find(val => val.channel.guild.id == message.guild.id);
+
 			if (voiceConnection.speaking) {} else {
-				message.channel.send(wrap("Beginning playlist..."))
+				channel.send(wrap("Beginning playlist..."))
 					.then(playing => {
 						if (!is_queue_empty()) {
 							play_list_download()
@@ -96,25 +83,27 @@ module.exports.music = async(bot, message, userinput, self) => {
 		}
 
 		function play_list_msg() {
-			message.channel.send("", {
-				embed: {
-					color: purpleinteger,
-					title: "Playing: " + queue[0].title,
-					thumbnail: {
-						url: queue[0].thumb
-					},
-					url: queue[0].url,
-					description: queue[0].desc,
-					footer: {
-						text: "Volume: " + VOLUME + "% | Duration: " + queue[0].duration + " | Requested by: " + queue[0].user
-					}
-				}
+			let q = queue[0];
+
+			let embed = new Discord.RichEmbed()
+				.setColor(orangehex)
+				.setTitle(`Playing: ${q.title}`)
+				.setThumbnail(q.thumb)
+				.setURL(q.url)
+				.setDescription(q.desc)
+				.setFooter(`Volume: ${VOLUME}% | Duration: ${q.duration} | Requester: ${q.user}`);
+
+			channel.send({
+				embed
+			}).catch(function() {
+				channel.send(GenericErrorMessage)
 			});
 		}
 
 		function play_list_play() {
 			const voiceChannel = message.member.voiceChannel
-			if (message.member.voiceChannel === undefined) return message.channel.send(wrap('You\'re not in a voice channel.'));
+			if (message.member.voiceChannel === undefined) return channel.send(wrap('You\'re not in a voice channel.'));
+
 			if (!is_queue_empty()) {
 				console.log("Playing: " + queue[0].title)
 				voiceChannel.join()
@@ -132,6 +121,7 @@ module.exports.music = async(bot, message, userinput, self) => {
 									console.log("File not found, so not deleting.");
 								}
 							});
+
 							if (!is_queue_empty()) {
 								dispatcher2 = null
 								queue.shift();
@@ -142,17 +132,17 @@ module.exports.music = async(bot, message, userinput, self) => {
 										if (!is_queue_empty()) {
 											play_list_download()
 										} else {
-											message.channel.send(wrap("You've reached the end of the playlist!"));
+											channel.send(wrap("You've reached the end of the playlist!"));
 										}
 									});
 							} else {
 								dispatcher2 = null
-								message.channel.send(wrap("You've reached the end of the playlist!"));
+								channel.send(wrap("You've reached the end of the playlist!"));
 							}
 						});
 					});
 			} else {
-				message.channel.send(wrap("You've reached the end of the playlist!"));
+				channel.send(wrap("You've reached the end of the playlist!"));
 			}
 		}
 
@@ -243,18 +233,15 @@ function tick() {
 	}
 
 	if (userinput.startsWith('skip')) {
-		console.log("..fuck me running..")
 		const voiceConnection = bot.voiceConnections.find(val => val.channel.guild.id == message.guild.id);
 		dispatcher2 = voiceConnection.player.dispatcher;
 		if (dispatcher2 !== null) {
 			dispatcher2.end();
 		} else {
-			message.channel.send(wrap("No playlist to work with!"))
+			channel.send(wrap("No playlist to work with!"))
 		}
 	}
 	///end of stunts shit
-
-
 
 
 	//Stops music
