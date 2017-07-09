@@ -13,7 +13,7 @@ module.exports.eval = async(Discord, bot, message, userinput, orangehex, owner_i
 		if (userinput.startsWith('eval ')) {
 			if (author.id !== owner_id) return;
 			let code = userinput.replace('eval ', '');
-			let res = await String(eval(code));
+			let res = await eval(code);
 			let thumbnail = "https://media.giphy.com/media/Hh6TxIOIh6o36/giphy.gif";
 
 			try {

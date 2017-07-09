@@ -444,11 +444,9 @@ function isNumeric(n) {
 //Logs into the bot account
 bot.login(config.bot_debug_token).catch(e => console.error(e)).then(() => {
 	//Let's get this playlist thing done
-	console.log("Loading a playlist " + queuepath);
 	fs.stat(queuepath, function(err, stat) {
 		if (err == null) {
 			//playlist exists
-			console.log('playlist.json exists');
 			var queuefile = fs.readFileSync(queuepath, {
 				encoding: "utf-8"
 			});
@@ -463,7 +461,6 @@ bot.login(config.bot_debug_token).catch(e => console.error(e)).then(() => {
 			data.push()
 			fs.writeFile('./music/playlist.json', JSON.stringify(data), function(err) {
 				if (err) throw err;
-				console.log('completely written');
 			});
 			var queuefile = fs.readFileSync(queuepath, {
 				encoding: "utf-8"
