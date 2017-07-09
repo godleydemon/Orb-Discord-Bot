@@ -38,6 +38,7 @@ const asciify = require('asciify');
 const isgd = require('isgd');
 
 // Global declarations //
+const queuepath = "./music/playlist.json";
 const self = "<@!250943511648534528>";
 const prefix = ";"
 const selfid = "250943511648534528";
@@ -441,7 +442,46 @@ function isNumeric(n) {
 }
 
 //Logs into the bot account
-bot.login(config.bot_debug_token).catch(e => console.error(e));
+bot.login(config.bot_debug_token).catch(e => console.error(e)).then((config.bot_debug_token) => {
+	//Let's get this playlist thing fucking done
+	console.log("Loading a fucking playlist " + queuepath);
+	fs.stat(queuepath, function(err, stat) {
+    if(err == null) {
+			//playlist exists
+        console.log('playlist.json fucking exists');
+				var queuefile = fs.readFileSync(queuepath, {
+					encoding: "utf-8"
+				});
+				queue = JSON.parse(queuefile);
+				servers = JSON.parse(file);
+    } else if(err.code == 'ENOENT') {
+        // playlist doesn't exist, let's make this bitch
+				var data = {}
+				data.table = []
+				for (i=0; i <26 ; i++){
+   				var obj = {
+       			id: i,
+       			square: i * i
+   				}
+   			data.table.push(obj)
+				}
+        fs.writeFile('./music/playlist.json', JSON.stringify(data), function(err) {
+				if (err) throw err;
+					console.log('completely written');
+				}
+				var file = fs.readFileSync(channelPath, {
+					encoding: "utf-8"
+				});
+				var queuefile = fs.readFileSync(queuepath, {
+					encoding: "utf-8"
+				});
+				queue = JSON.parse(queuefile);
+    } else {
+			//if I get here, something catastrophically amazing happened and I became a meme
+        console.log('uh oh.. shit| ', err.code);
+    }
+	});
+});
 
 bot.on('error', (e) => {
 	console.error(e);
