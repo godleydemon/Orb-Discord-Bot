@@ -169,7 +169,7 @@ bot.on('message', async(message) => {
 		require("./modules/google.js").google(Discord, message, userinput, greenhex, GenericErrorMessage);
 		require("./modules/youtube.js").youtube(Discord, message, userinput, redhex, GenericErrorMessage);
 		require("./modules/twitch.js").twitch(Discord, message, userinput, purplehex, GenericErrorMessage);
-		require("./modules/music.js").music(bot, message, userinput, self, fs, orangehex, GenericErrorMessage);
+		//require("./modules/music.js").music(bot, message, userinput, self, fs, orangehex, GenericErrorMessage);
 		require("./modules/anime.js").anime(Discord, message, userinput, GenericErrorMessage);
 		require("./modules/wallpaper.js").wallpaper(message, userinput);
 		require("./modules/custom.js").custom(message, userinput, owner_id, fs);
