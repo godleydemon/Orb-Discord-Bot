@@ -454,6 +454,9 @@ bot.login(config.bot_debug_token).catch(e => console.error(e)).then(() => {
 				});
 				queue = JSON.parse(queuefile);
     } else if(err.code == 'ENOENT') {
+			if (!fs.existsSync('music')){
+    		fs.mkdirSync('music');
+			}
         // playlist doesn't exist, let's make this bitch
 				var data = {}
 				data = []
