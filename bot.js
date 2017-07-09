@@ -126,6 +126,8 @@ bot.on('presenceUpdate', async(oldMember, newMember) => {
 bot.on('message', async(message) => {
 	try {
 		if (message.author.bot) return;
+		if (message.guild.id === '81384788765712384' && message.author.id != owner_id) return;
+
 
 		const author = await message.author;
 		const content = await message.content;
