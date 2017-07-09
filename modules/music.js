@@ -14,7 +14,7 @@ module.exports.music = async(bot, message, userinput, self, fs, orangehex, Gener
 		try {
 			const author = await message.author;
 			const content = await message.content;
-			const channel = await channel;
+			const channel = await message.channel;
 			const member = await message.guild.fetchMember(message.author);
 
 			/*
@@ -49,93 +49,21 @@ module.exports.music = async(bot, message, userinput, self, fs, orangehex, Gener
 				});
 
 
-				let _flagCheck = setInterval(function() { //Will keep waiting until ytvid is defined and then will continue.
-					if (ytvid) {
-						clearInterval(_flagCheck);
+		//Downloads and plays videos from youtube.
 
-						channel.send("```ini\n[ Fetching Song ]\n```")
-							.then(function() {
-								msgid = bot.user.lastMessageID;
-							});
+///Stunts shit
+if (userinput.startsWith('play ')) {
+		const voiceChannel = message.member.voiceChannel;
+		if (message.member.voiceChannel === undefined) return message.channel.send(wrap('You\'re not in a voice channel.'));
+		var SUFFIX = message.content.replace('music request ', '');
+		message.channel.send(wrap('Searching...'))
+			.then(playlistmsg => {
 
-						youtubedl(ytvid, ['--format=250', '--no-warnings'],
-							function(err) {
+				SEARCHSTRING = 'ytsearch1:' + SUFFIX;
 
-								if (err) {
-
-									let _waitMsgID = setInterval(function() { //Will keep waiting until msgid is defined and then will continue.
-										if (msgid) {
-											clearInterval(_waitMsgID);
-
-											return channel.fetchMessage(msgid)
-												.then(msg => msg.edit("```ini\n[ Audio could not be retrieved from the video ]\n```"));
-										}
-									}, 200);
-
-								} else {
-									video = youtubedl(ytvid, ['--format=250', '--no-warnings']);
-								}
-							});
-					}
-				}, 200);
-
-				let time = Date.now();
-				let _wait = setInterval(function() { //Will keep waiting until video is defined and then will continue.
-					if (video) {
-						clearInterval(_wait);
-
-						let title;
-						let size;
-						//Downloading the song.
-						video.on('info', function(info) {
-							title = info.title;
-							size = info.size;
-
-							let _waitMsgID = setInterval(function() { //Will keep waiting until msgid is defined and then will continue.
-								if (msgid) {
-									clearInterval(_waitMsgID);
-
-									channel.fetchMessage(msgid)
-										.then(msg => msg.edit("```ini\n[ Downloading: " + title + " ]\n```"));
-								}
-							}, 200);
-
-						});
-
-						const writestream = fs.createWriteStream(song);
-						video.pipe(writestream); //Writing the song to a file.
-
-						//Joins the voice channel after the song is done downloading.
-						video.on('end', function() {
-							channel.fetchMessage(msgid)
-								.then(msg => msg.edit("```ini\n[ Playing: " + title + " ]\n```"));
-							voiceChannel.join()
-								.then(connection => {
-									voice_connection = connection;
-									const dispatcher = connection.playFile(song);
-									dispatcher.setVolume(1);
-								});
-						});
-
-					} else if (Date.now() - time > 20000) {
-						clearInterval(_wait);
-						return;
-					}
-				}, 200);
-
-				return;
-			}
-			*/
-
-			// Stunts music command
-			if (userinput.startsWith('m request ')) {
-				const voiceChannel = message.member.voiceChannel;
-				if (message.member.voiceChannel === undefined) return channel.send(wrap('You\'re not in a voice channel.'));
-				let SUFFIX = message.content.replace('m request ', '');
-				channel.send(wrap('Searching...'))
-					.then(playlistmsg => {
-
-						SEARCHSTRING = 'ytsearch1:' + SUFFIX;
+				if (SUFFIX[0].includes("http")) {
+					SEARCHSTRING = SUFFIX
+				}
 
 						if (SUFFIX[0].includes("http")) {
 							SEARCHSTRING = SUFFIX
@@ -174,7 +102,30 @@ module.exports.music = async(bot, message, userinput, self, fs, orangehex, Gener
 							playlistmsg.edit(wrap('added \"' + TITLE + '\" to queue by: ' + message.author.username))
 						});
 					});
+					fs.writeFileSync(queuepath, JSON.stringify(queue, null, 4));
+					playlistmsg.edit(wrap('added \"' + TITLE + '\" to queue by: ' + message.author.username))
+				});
+			});
+			voiceChannel.join()
+			const voiceConnection = bot.voiceConnections.find(val => val.channel.guild.id == message.guild.id);
+			console.log(voiceConnection.playing);
+			if (voiceConnection.playing) {
+				console.log("currently playing something")
+			} else {
+				message.channel.send(wrap("Beginning playlist..."))
+					.then(playing => {
+						if (!is_queue_empty()) {
+							play_list_download()
+						} else {
+							channel.fetchMessage(msgid)
+								.then(msg => msg.edit(wrap("No playlist to play\nAdd/Create a new playlist with\n!ab request url/name")));
+						}
+					});
 			}
+	}
+	function is_queue_empty() {
+		return queue.length === 0;
+	}
 
 			function is_queue_empty() {
 				return queue.length === 0;
@@ -290,9 +241,20 @@ module.exports.music = async(bot, message, userinput, self, fs, orangehex, Gener
 				return info.ext || info.container;
 			}
 
-			function getEncoding(info) {
-				return info.encoding || info.audioEncoding || info.acodec;
-			}
+	function isEncodedAs(info, encoding) {
+		return getEncoding(info) === encoding;
+	}
+//	if (userinput.startsWith('play')) {
+//		message.channel.send(wrap("Beginning playlist..."))
+//			.then(playing => {
+//				if (!is_queue_empty()) {
+//					play_list_download()
+//				} else {
+//					channel.fetchMessage(msgid)
+//						.then(msg => msg.edit(wrap("No playlist to play\nAdd/Create a new playlist with\n!ab request url/name")));
+//				}
+//			});
+//	}
 
 			function isEncodedAs(info, encoding) {
 				return getEncoding(info) === encoding;
@@ -309,10 +271,17 @@ module.exports.music = async(bot, message, userinput, self, fs, orangehex, Gener
 					});
 			}
 
-			if (message.content.toLowerCase().includes("what's playing") || message.content.toLowerCase().includes("whats playing")) {
-				if (channel.name != "music" && channel.name != 'bot-stuff') return;
-				play_list_msg()
-			}
+	if (userinput.startsWith('skip')) {
+		console.log("..fuck me running..")
+		const voiceConnection = bot.voiceConnections.find(val => val.channel.guild.id == message.guild.id);
+		dispatcher2 = voiceConnection.player.dispatcher;
+		if (dispatcher2 !== null) {
+			dispatcher2.end();
+		} else {
+			message.channel.send(wrap("No playlist to work with!"))
+		}
+	}
+///end of stunts shit
 
 			if (userinput.startsWith('m skip')) {
 				const voiceConnection = client.voiceConnections.find(val => val.channel.guild.id == message.guild.id);
