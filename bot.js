@@ -40,7 +40,7 @@ const isgd = require('isgd');
 // Global declarations //
 const queuepath = "./music/playlist.json";
 const self = "<@!250943511648534528>";
-const prefix = ";"
+const prefix = ";";
 const selfid = "250943511648534528";
 const owner_id = "105640584470937600";
 const orbios_id = "105684379648425984";
@@ -442,7 +442,7 @@ function isNumeric(n) {
 }
 
 //Logs into the bot account
-bot.login(config.bot_debug_token).catch(e => console.error(e)).then((config.bot_debug_token) => {
+bot.login(config.bot_debug_token).catch(e => console.error(e)).then(() => {
 	//Let's get this playlist thing fucking done
 	console.log("Loading a fucking playlist " + queuepath);
 	fs.stat(queuepath, function(err, stat) {
@@ -453,7 +453,6 @@ bot.login(config.bot_debug_token).catch(e => console.error(e)).then((config.bot_
 					encoding: "utf-8"
 				});
 				queue = JSON.parse(queuefile);
-				servers = JSON.parse(file);
     } else if(err.code == 'ENOENT') {
         // playlist doesn't exist, let's make this bitch
 				var data = {}
@@ -466,9 +465,9 @@ bot.login(config.bot_debug_token).catch(e => console.error(e)).then((config.bot_
    			data.table.push(obj)
 				}
         fs.writeFile('./music/playlist.json', JSON.stringify(data), function(err) {
-				if (err) throw err;
-					console.log('completely written');
-				}
+					if (err) throw err;
+						console.log('completely written');
+				});
 				var file = fs.readFileSync(channelPath, {
 					encoding: "utf-8"
 				});
