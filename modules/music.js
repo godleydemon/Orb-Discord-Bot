@@ -25,114 +25,9 @@ module.exports.music = async(bot, message, userinput, self) => {
 		const member = await message.guild.fetchMember(message.author);
 
 		//Downloads and plays videos from youtube.
-		if (userinput.startsWith('play ')) {
-			if (author.id != owner_id) return channel.send(":broken_heart: This command is only for my master.");
-			if (!member.voiceChannel) return message.channel.send('You\'re not in a voice channel.');
-			const song = './song.mp3';
-			const voiceChannel = member.voiceChannel;
-			let video;
 
-			var userinput = userinput.replace('play ', '');
-			let ytvid;
-
-			youTube.search(userinput, 1, function(err, res) {
-				if (err) return err
-				let rawData = JSON.stringify(res, null, 1);
-				let parsed = JSON.parse(rawData);
-				let msgid;
-
-				if (parsed.items[0]) {
-					if (parsed.items[0].id.kind === 'youtube#channel') {
-						channel.send('Unfortunately I am not able to play a YouTube channel.');
-					} else if (parsed.items[0].id.kind === 'youtube#video') {
-						ytvid = "https://www.youtube.com/watch?v=" + parsed.items[0].id.videoId;
-					} else if (parsed.items[0].id.kind === 'youtube#playlist') {
-						channel.send('I am currently not able to play playlists...');
-					}
-				} else {
-					channel.send(author + " Something went wrong... Please try again!");
-				}
-			});
-
-
-			let _flagCheck = setInterval(function() { //Will keep waiting until ytvid is defined and then will continue.
-				if (ytvid) {
-					clearInterval(_flagCheck);
-
-					channel.send("```ini\n[ Fetching Song ]\n```")
-						.then(function() {
-							msgid = bot.user.lastMessageID;
-						});
-
-					youtubedl(ytvid, ['--format=250', '--no-warnings'],
-						function(err) {
-
-							if (err) {
-
-								var _waitMsgID = setInterval(function() { //Will keep waiting until msgid is defined and then will continue.
-									if (msgid) {
-										clearInterval(_waitMsgID);
-
-										return channel.fetchMessage(msgid)
-											.then(msg => msg.edit("```ini\n[ Audio could not be retrieved from the video ]\n```"));
-									}
-								}, 200);
-
-							} else {
-								video = youtubedl(ytvid, ['--format=250', '--no-warnings']);
-							}
-						});
-				}
-			}, 200);
-
-			let time = Date.now();
-			var _wait = setInterval(function() { //Will keep waiting until video is defined and then will continue.
-				if (video) {
-					clearInterval(_wait);
-
-					let title;
-					let size;
-					//Downloading the song.
-					video.on('info', function(info) {
-						title = info.title;
-						size = info.size;
-
-						var _waitMsgID = setInterval(function() { //Will keep waiting until msgid is defined and then will continue.
-							if (msgid) {
-								clearInterval(_waitMsgID);
-
-								channel.fetchMessage(msgid)
-									.then(msg => msg.edit("```ini\n[ Downloading: " + title + " ]\n```"));
-							}
-						}, 200);
-
-					});
-
-					const writestream = fs.createWriteStream(song);
-					video.pipe(writestream); //Writing the song to a file.
-
-					//Joins the voice channel after the song is done downloading.
-					video.on('end', function() {
-						channel.fetchMessage(msgid)
-							.then(msg => msg.edit("```ini\n[ Playing: " + title + " ]\n```"));
-						voiceChannel.join()
-							.then(connection => {
-								voice_connection = connection;
-								const dispatcher = connection.playFile(song);
-								dispatcher.setVolume(1);
-							});
-					});
-
-				} else if (Date.now() - time > 20000) {
-					clearInterval(_wait);
-					return;
-				}
-			}, 200);
-
-			return;
-		}
 ///Stunts shit
-if (userinput.startsWith('music request ')) {
+if (userinput.startsWith('play ')) {
 		const voiceChannel = message.member.voiceChannel;
 		if (message.member.voiceChannel === undefined) return message.channel.send(wrap('You\'re not in a voice channel.'));
 		var SUFFIX = message.content.replace('music request ', '');
@@ -178,6 +73,22 @@ if (userinput.startsWith('music request ')) {
 					playlistmsg.edit(wrap('added \"' + TITLE + '\" to queue by: ' + message.author.username))
 				});
 			});
+			voiceChannel.join()
+			const voiceConnection = bot.voiceConnections.find(val => val.channel.guild.id == message.guild.id);
+			console.log(voiceConnection.playing);
+			if (voiceConnection.playing) {
+				console.log("currently playing something")
+			} else {
+				message.channel.send(wrap("Beginning playlist..."))
+					.then(playing => {
+						if (!is_queue_empty()) {
+							play_list_download()
+						} else {
+							channel.fetchMessage(msgid)
+								.then(msg => msg.edit(wrap("No playlist to play\nAdd/Create a new playlist with\n!ab request url/name")));
+						}
+					});
+			}
 	}
 	function is_queue_empty() {
 		return queue.length === 0;
@@ -295,24 +206,25 @@ if (userinput.startsWith('music request ')) {
 	function isEncodedAs(info, encoding) {
 		return getEncoding(info) === encoding;
 	}
-	if (userinput.startsWith('music list play')) {
-		message.channel.send(wrap("Beginning playlist..."))
-			.then(playing => {
-				if (!is_queue_empty()) {
-					play_list_download()
-				} else {
-					channel.fetchMessage(msgid)
-						.then(msg => msg.edit(wrap("No playlist to play\nAdd/Create a new playlist with\n!ab request url/name")));
-				}
-			});
-	}
+//	if (userinput.startsWith('play')) {
+//		message.channel.send(wrap("Beginning playlist..."))
+//			.then(playing => {
+//				if (!is_queue_empty()) {
+//					play_list_download()
+//				} else {
+//					channel.fetchMessage(msgid)
+//						.then(msg => msg.edit(wrap("No playlist to play\nAdd/Create a new playlist with\n!ab request url/name")));
+//				}
+//			});
+//	}
 
 	if (message.content.toLowerCase().includes("what's playing") || message.content.toLowerCase().includes("whats playing")) {
 		play_list_msg()
 	}
 
-	if (userinput.startsWith('music next')) {
-		const voiceConnection = client.voiceConnections.find(val => val.channel.guild.id == message.guild.id);
+	if (userinput.startsWith('skip')) {
+		console.log("..fuck me running..")
+		const voiceConnection = bot.voiceConnections.find(val => val.channel.guild.id == message.guild.id);
 		dispatcher2 = voiceConnection.player.dispatcher;
 		if (dispatcher2 !== null) {
 			dispatcher2.end();
