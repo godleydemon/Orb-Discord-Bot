@@ -66,6 +66,8 @@ bot.on('ready', () => {
 });
 
 bot.on('guildMemberAdd', (member) => {
+	if (member.guild.id != orbios_id) return;
+
 	let greetMsg = ['Welcome newbie :large_orange_diamond:', 'Hey there! Hope you enjoy your time on Orbios!', 'What are you trying to pull?! Joining without saying anything?!', 'You took long enough to join... :cry:', 'I hope you say hello at least.', 'You better watch out there buddy, you may just have a good time! :open_mouth:'];
 	let rnd = Math.floor(Math.random() * greetMsg.length);
 
