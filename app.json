@@ -11,7 +11,5 @@
   "addons": [
 
   ],
-  "buildpacks": [
-
-  ]
+  "buildpacks": heroku/nodejs
 }
