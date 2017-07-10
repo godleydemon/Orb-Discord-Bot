@@ -1,6 +1,6 @@
 {
   "name": "Orb-Discord-Bot",
-  "description": "development version of Orb",
+  "description": "development version of Orb v1",
   "scripts": {
     "postdeploy": "Dependencies.bat"
   },
